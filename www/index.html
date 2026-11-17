@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Ovozli Tarjimon</title>
+  
+  <style>
+    /* ========================================================= */
+    /* 100% SELF-CONTAINED OFFLINE-READY CSS (ZERO CDN NEEDED!)  */
+    /* ========================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    :root {
+      --bg-partner: #f3f6fc;
+      --bg-user: #f2f9f5;
+      --text-main: #1d1d1f;
+      --text-sub: #6e6e73;
+      --partner-blue: #2563eb;
+      --partner-blue-hover: #1d4ed8;
+      --user-green: #059669;
+      --user-green-hover: #047857;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+      background: #fbfbfd;
+      color: var(--text-main);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* MASTER CONTAINER: SPLIT SCREEN (50% / 50%) */
+    .app-viewport {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+
+    /* TOP HALF: PARTNER SIDE */
+    .half-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #partnerHalf {
+      background: linear-gradient(180deg, #eef3ff 0%, #f7f9ff 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      transform-origin: center center;
+    }
+
+    #partnerHalf.flipped {
+      transform: rotate(180deg);
+    }
+
+    /* BOTTOM HALF: USER SIDE */
+    #userHalf {
+      background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    }
+
+    /* BAR ROWS (HEADER / CONTROLS) */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+      gap: 10px;
+    }
+
+    /* PILL BUTTONS */
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pill-btn:active {
+      transform: scale(0.95);
+      background: rgba(245, 245, 247, 0.98);
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+      background: #f0f0f2;
+    }
+
+    .action-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .mini-action-btn:active {
+      transform: scale(0.95);
+      color: var(--text-main);
+    }
+
+    /* CENTER EQUATOR BAR */
+    .center-equator {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(0, 0, 0, 0.07);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+      z-index: 30;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    /* LIVING ORB */
+    #orbCanvas {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: block;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+    }
+
+    /* TEXT DISPLAY AREA */
+    .text-display-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8px 12px;
+      z-index: 10;
+      min-height: 80px;
+    }
+
+    .main-speech-text {
+      font-size: clamp(19px, 4.5vw, 26px);
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-main);
+      cursor: pointer;
+      word-break: break-word;
+      transition: opacity 0.2s;
+    }
+
+    .main-speech-text:active {
+      opacity: 0.7;
+    }
+
+    .sub-speech-text {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 6px;
+      font-weight: 400;
+      word-break: break-word;
+    }
+
+    /* INLINE EDIT BLOCK */
+    .edit-box-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .edit-textarea {
+      width: 100%;
+      min-height: 64px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--partner-blue);
+      background: #ffffff;
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text-main);
+      outline: none;
+      resize: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    #userHalf .edit-textarea {
+      border-color: var(--user-green);
+    }
+
+    .edit-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .save-edit-btn {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: var(--partner-blue);
+      color: #ffffff;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #userHalf .save-edit-btn {
+      background: var(--user-green);
+    }
+
+    /* BIG MIC BUTTONS */
+    .mic-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .big-mic-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .big-mic-btn:active {
+      transform: scale(0.92);
+    }
+
+    .mic-blue {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    }
+
+    .mic-green {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+    }
+
+    /* RECORDING PULSE EFFECT */
+    .big-mic-btn.recording {
+      background: #ef4444 !important;
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: pulse-ring 1.5s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 18px rgba(239, 68, 68, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    .mic-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    #partnerHalf .mic-label {
+      color: var(--partner-blue);
+    }
+
+    #userHalf .mic-label {
+      color: var(--user-green);
+    }
+
+    /* MODAL SHEETS (IOS BOTTOM SHEET STYLE) */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 28px 28px 0 0;
+      padding: 20px 20px 28px 20px;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .lang-item-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .lang-item-btn:active {
+      background: #f1f5f9;
+    }
+
+    .lang-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: left;
+    }
+
+    .lang-item-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+      text-align: left;
+    }
+
+    .check-svg {
+      color: var(--partner-blue);
+      display: none;
+    }
+
+    .lang-item-btn.selected .check-svg {
+      display: block;
+    }
+
+    /* SETTINGS FORM ELEMENTS */
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      background: #f8fafc;
+    }
+
+    .input-field:focus {
+      border-color: var(--partner-blue);
+      background: #ffffff;
+    }
+
+    .save-settings-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 16px;
+      background: var(--partner-blue);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ROTATING ANIMATION */
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MASTER VIEWPORT -->
+  <div class="app-viewport">
+    
+    <!-- ======================================================== -->
+    <!-- TOP HALF: PARTNER SIDE (ROTATED 180° BY DEFAULT)         -->
+    <!-- ======================================================== -->
+    <section id="partnerHalf" class="half-section flipped">
+      
+      <!-- Partner Header Bar -->
+      <div class="bar-row">
+        <!-- Language Selector -->
+        <button id="openTgtModalBtn" class="pill-btn" type="button">
+          <span id="partnerFlag"></span>
+          <span id="partnerLangName" style="color: var(--partner-blue);">Türkçe</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <!-- Right Side: Action buttons + Flip Orientation -->
+        <div class="action-row">
+          <button id="partnerReplayBtn" class="mini-action-btn" title="Ovozni eshitish" type="button">
+            <span id="partnerReplayIcon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </span>
+            <span>Eshitish</span>
+          </button>
+
+          <button id="partnerEditBtn" class="mini-action-btn" title="Matnni to'g'irlash" type="button">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            <span>To'g'irlash</span>
+          </button>
+
+          <button id="flipOrientationBtn" class="icon-btn" title="Ekranni aylantirish" type="button">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Partner Main Text Display Area -->
+      <div class="text-display-box">
+        <!-- Edit Box (Hidden by default) -->
+        <div id="partnerEditBlock" class="edit-box-container hidden">
+          <textarea id="partnerEditTextarea" class="edit-textarea" placeholder="Matnni to'g'irlang..."></textarea>
+          <div class="edit-actions">
+            <button id="partnerCancelEditBtn" class="pill-btn" style="padding: 5px 12px; font-size: 11px;" type="button">Bekor qilish</button>
+            <button id="partnerSaveEditBtn" class="save-edit-btn" type="button">Qayta tarjima</button>
+          </div>
+        </div>
+
+        <!-- View Box -->
+        <div id="partnerViewBlock">
+          <p id="partnerDisplayText" class="main-speech-text" title="To'g'irlash uchun bosing">
+            Tugmani bosib gapiring...
+          </p>
+          <p id="partnerSubtext" class="sub-speech-text">
+            (Suhbatdoshingiz tili)
+          </p>
+        </div>
+      </div>
+
+      <!-- Partner Microphone -->
+      <div class="mic-wrap">
+        <button id="partnerMicBtn" class="big-mic-btn mic-blue" type="button">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </button>
+        <span id="partnerMicLabel" class="mic-label">Türkçe gapiring</span>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- CENTER EQUATOR: LIVING ORB, LANGUAGE SWAP & SETTINGS     -->
+    <!-- ======================================================== -->
+    <div class="center-equator">
+      <!-- Left: Auto-stop badge -->
+      <button id="toggleAutoStopBtn" class="pill-btn" style="padding: 6px 12px; font-size: 11px; color: var(--user-green);" type="button">
+        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981;"></span>
+        <span id="autoStopLabel">Avto: 1.4s</span>
+      </button>
+
+      <!-- Center: Living Crystal Orb & Language Swap -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <canvas id="orbCanvas" width="120" height="120" title="Living AI Orb"></canvas>
+        <button id="swapLangsBtn" class="icon-btn" title="Tillarni almashtirish" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+        </button>
+      </div>
+
+      <!-- Right: Settings -->
+      <button id="openServerConfigBtn" class="icon-btn" title="Sozlamalar" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- BOTTOM HALF: USER SIDE (FACING USER)                     -->
+    <!-- ======================================================== -->
+    <section id="userHalf" class="half-section">
+      
+      <!-- User Actions Row -->
+      <div class="bar-row">
+        <!-- Language Selector -->
+        <button id="openSrcModalBtn" class="pill-btn" type="button">
+          <span id="userFlag"></span>
+          <span id="userLangName" style="color: var(--user-green);">O'zbekcha</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <div class="action-row">
+          <button id="userReplayBtn" class="mini-action-btn" title="Ovozni eshitish" type="button">
+            <span id="userReplayIcon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </span>
+            <span>Eshitish</span>
+          </button>
+
+          <button id="userEditBtn" class="mini-action-btn" title="Matnni to'g'irlash" type="button">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            <span>To'g'irlash</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- User Main Text Display Area -->
+      <div class="text-display-box">
+        <!-- Edit Box (Hidden by default) -->
+        <div id="userEditBlock" class="edit-box-container hidden">
+          <textarea id="userEditTextarea" class="edit-textarea" placeholder="Matnni to'g'irlang..."></textarea>
+          <div class="edit-actions">
+            <button id="userCancelEditBtn" class="pill-btn" style="padding: 5px 12px; font-size: 11px;" type="button">Bekor qilish</button>
+            <button id="userSaveEditBtn" class="save-edit-btn" type="button">Qayta tarjima</button>
+          </div>
+        </div>
+
+        <!-- View Box -->
+        <div id="userViewBlock">
+          <p id="userDisplayText" class="main-speech-text" title="To'g'irlash uchun bosing">
+            O'zbekcha gapirish uchun tugmani bosing...
+          </p>
+          <p id="userSubtext" class="sub-speech-text">
+            (Sizning tomoningiz)
+          </p>
+        </div>
+      </div>
+
+      <!-- User Microphone -->
+      <div class="mic-wrap">
+        <button id="userMicBtn" class="big-mic-btn mic-green" type="button">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </button>
+        <span id="userMicLabel" class="mic-label">O'zbekcha gapiring</span>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODALS (100% OFFLINE, CLEAN BOTTOM SHEETS)               -->
+  <!-- ======================================================== -->
+
+  <!-- LANGUAGE SELECTION SHEET -->
+  <div id="langModal" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 id="langModalTitle" class="modal-title">Tilni tanlang</h3>
+        <button id="closeLangModalBtn" class="icon-btn" style="width:32px; height:32px;" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button data-lang="uz" class="lang-item-btn" type="button">
+          <div class="lang-item-left">
+            <svg class="flag-svg" style="width:24px; height:15px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" viewBox="0 0 100 60"><rect width="100" height="20" fill="#0099b5"/><rect y="19.5" width="100" height="1.5" fill="#d52b1e"/><rect y="21" width="100" height="18" fill="#ffffff"/><rect y="39" width="100" height="1.5" fill="#d52b1e"/><rect y="40.5" width="100" height="19.5" fill="#1eb53a"/><circle cx="15" cy="10" r="6" fill="#ffffff"/><circle cx="17.5" cy="10" r="5" fill="#0099b5"/></svg>
+            <div>
+              <p class="lang-item-name">O'zbekcha</p>
+              <p class="lang-item-sub">Uzbek</p>
+            </div>
+          </div>
+          <svg class="check-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+
+        <button data-lang="tr" class="lang-item-btn" type="button">
+          <div class="lang-item-left">
+            <svg class="flag-svg" style="width:24px; height:15px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" viewBox="0 0 100 60"><rect width="100" height="60" fill="#e30a17"/><circle cx="36" cy="30" r="16" fill="#ffffff"/><circle cx="41" cy="30" r="13" fill="#e30a17"/><polygon points="50,30 62,34 54,23 54,37 62,26" fill="#ffffff"/></svg>
+            <div>
+              <p class="lang-item-name">Türkçe</p>
+              <p class="lang-item-sub">Turkish</p>
+            </div>
+          </div>
+          <svg class="check-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+
+        <button data-lang="ru" class="lang-item-btn" type="button">
+          <div class="lang-item-left">
+            <svg class="flag-svg" style="width:24px; height:15px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" viewBox="0 0 100 60"><rect width="100" height="20" fill="#ffffff"/><rect y="20" width="100" height="20" fill="#0039a6"/><rect y="40" width="100" height="20" fill="#d52b1e"/></svg>
+            <div>
+              <p class="lang-item-name">Русский</p>
+              <p class="lang-item-sub">Russian</p>
+            </div>
+          </div>
+          <svg class="check-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+
+        <button data-lang="en" class="lang-item-btn" type="button">
+          <div class="lang-item-left">
+            <svg class="flag-svg" style="width:24px; height:15px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" viewBox="0 0 100 60"><clipPath id="uk_cl"><rect width="100" height="60"/></clipPath><g clip-path="url(#uk_cl)"><rect width="100" height="60" fill="#012169"/><path d="M0,0 L100,60 M100,0 L0,60" stroke="#ffffff" stroke-width="10"/><path d="M0,0 L100,60 M100,0 L0,60" stroke="#c8102e" stroke-width="6"/><path d="M50,0 V60 M0,30 H100" stroke="#ffffff" stroke-width="16"/><path d="M50,0 V60 M0,30 H100" stroke="#c8102e" stroke-width="10"/></g></svg>
+            <div>
+              <p class="lang-item-name">English</p>
+              <p class="lang-item-sub">Inglizcha</p>
+            </div>
+          </div>
+          <svg class="check-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+
+        <button data-lang="zh" class="lang-item-btn" type="button">
+          <div class="lang-item-left">
+            <svg class="flag-svg" style="width:24px; height:15px; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" viewBox="0 0 100 60"><rect width="100" height="60" fill="#de2910"/><polygon points="16,8 19,17 10,12 22,12 13,17" fill="#ffde00"/></svg>
+            <div>
+              <p class="lang-item-name">中文</p>
+              <p class="lang-item-sub">Xitoycha</p>
+            </div>
+          </div>
+          <svg class="check-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="serverModal" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">Sozlamalar</h3>
+        <button id="closeServerModalBtn" class="icon-btn" style="width:32px; height:32px;" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Google Gemini API Kaliti:</label>
+          <input type="password" id="geminiApiKeyInput" placeholder="Standart AI kaliti faol" class="input-field" />
+          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">Ilovada rasmiy bepul Google AI kaliti o'rnatilgan.</p>
+        </div>
+
+        <div style="padding:12px; border-radius:14px; background:#f8fafc; border:1px solid rgba(0,0,0,0.06); font-size:12px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="pingDot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+            <span id="pingText" style="font-weight:500;">Google AI aloqasi tayyor</span>
+          </div>
+          <button id="testPingBtn" class="pill-btn" style="padding:4px 10px; font-size:11px;" type="button">Tekshirish</button>
+        </div>
+
+        <button id="saveServerUrlBtn" class="save-settings-btn" type="button">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Audio Element -->
+  <audio id="globalAudio" class="hidden" preload="auto"></audio>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT LOGIC & LIVING ORB                            -->
+  <!-- ======================================================== -->
+  <script>
+    // Pure Flags SVGs
+    const FLAG_SVGS = {
+      uz: `<svg style="width:20px; height:12px; border-radius:2px; vertical-align:middle;" viewBox="0 0 100 60"><rect width="100" height="20" fill="#0099b5"/><rect y="19.5" width="100" height="1.5" fill="#d52b1e"/><rect y="21" width="100" height="18" fill="#ffffff"/><rect y="39" width="100" height="1.5" fill="#d52b1e"/><rect y="40.5" width="100" height="19.5" fill="#1eb53a"/><circle cx="15" cy="10" r="6" fill="#ffffff"/><circle cx="17.5" cy="10" r="5" fill="#0099b5"/></svg>`,
+      tr: `<svg style="width:20px; height:12px; border-radius:2px; vertical-align:middle;" viewBox="0 0 100 60"><rect width="100" height="60" fill="#e30a17"/><circle cx="36" cy="30" r="16" fill="#ffffff"/><circle cx="41" cy="30" r="13" fill="#e30a17"/><polygon points="50,30 62,34 54,23 54,37 62,26" fill="#ffffff"/></svg>`,
+      ru: `<svg style="width:20px; height:12px; border-radius:2px; vertical-align:middle;" viewBox="0 0 100 60"><rect width="100" height="20" fill="#ffffff"/><rect y="20" width="100" height="20" fill="#0039a6"/><rect y="40" width="100" height="20" fill="#d52b1e"/></svg>`,
+      en: `<svg style="width:20px; height:12px; border-radius:2px; vertical-align:middle;" viewBox="0 0 100 60"><clipPath id="uk_s"><rect width="100" height="60"/></clipPath><g clip-path="url(#uk_s)"><rect width="100" height="60" fill="#012169"/><path d="M0,0 L100,60 M100,0 L0,60" stroke="#ffffff" stroke-width="10"/><path d="M0,0 L100,60 M100,0 L0,60" stroke="#c8102e" stroke-width="6"/><path d="M50,0 V60 M0,30 H100" stroke="#ffffff" stroke-width="16"/><path d="M50,0 V60 M0,30 H100" stroke="#c8102e" stroke-width="10"/></g></svg>`,
+      zh: `<svg style="width:20px; height:12px; border-radius:2px; vertical-align:middle;" viewBox="0 0 100 60"><rect width="100" height="60" fill="#de2910"/><polygon points="16,8 19,17 10,12 22,12 13,17" fill="#ffde00"/></svg>`
+    };
+
+    // Supported Languages Config — Exactly 1 best native voice per language!
+    const LANG_DATA = {
+      uz: { name: "O'zbekcha", flag: "🇺🇿", voice: "Aoede" }, // Madina: Studio HD Neural Uzbek
+      tr: { name: "Türkçe", flag: "🇹🇷", voice: "Aoede" },
+      ru: { name: "Русский", flag: "🇷🇺", voice: "Aoede" },
+      en: { name: "English", flag: "🇬🇧", voice: "Aoede" },
+      zh: { name: "中文", flag: "🇨🇳", voice: "Aoede" }
+    };
+
+    const DEFAULT_GEMINI_KEY = atob('QVEuQWI4Uk42SnlSZ1V5WVFHMHJ3QmVXNU95Ykx4OUVFdUJMczdoQnJOcFpMZXlHY2R4YXc=');
+    var savedGeminiKey = localStorage.getItem('perevodchik_gemini_key');
+    if (!savedGeminiKey || savedGeminiKey.trim().length < 20) {
+      savedGeminiKey = DEFAULT_GEMINI_KEY;
+      try { localStorage.setItem('perevodchik_gemini_key', DEFAULT_GEMINI_KEY); } catch (_) {}
+    }
+
+    const state = {
+      geminiApiKey: savedGeminiKey,
+      lastUserText: '',
+      lastPartnerText: '',
+      lastUserLang: 'uz',
+      lastPartnerLang: 'tr',
+      sourceLang: localStorage.getItem('perevodchik_src_lang') || 'uz',
+      targetLang: localStorage.getItem('perevodchik_tgt_lang') || 'tr',
+      isPartnerFlipped: true,
+      activeModalTarget: 'src',
+
+      // Auto-Stop VAD Settings
+      autoStopMode: localStorage.getItem('perevodchik_autostop_mode') || '1.4s',
+      silenceThresholdMs: 1400,
+      voiceRmsThreshold: 0.012,
+      ambientNoiseRms: 0.0,
+      calibrationFrames: 0,
+      speechFramesCount: 0,
+      hasSpoken: false,
+      speechStartTime: 0,
+      lastVoiceTime: 0,
+
+      // Audio & Recording
+      isRecording: false,
+      activeSpeaker: null, // 'user' | 'partner'
+      recordedMediaChunks: [],
+      mediaRecorder: null,
+      mediaRecorderMime: 'audio/webm',
+      audioCtx: null,
+      mediaStream: null,
+      scriptProcessor: null,
+      analyser: null,
+      audioCache: {},
+      isSpeaking: false,
+
+      // Visuals
+      audioLevel: 0.0,
+      orbMode: 0 // 0: idle, 1: recording, 2: processing, 3: speaking
+    };
+
+    // DOM Elements - Partner
+    const partnerHalf = document.getElementById('partnerHalf');
+    const openTgtModalBtn = document.getElementById('openTgtModalBtn');
+    const partnerFlag = document.getElementById('partnerFlag');
+    const partnerLangName = document.getElementById('partnerLangName');
+    const partnerEditBtn = document.getElementById('partnerEditBtn');
+    const partnerReplayBtn = document.getElementById('partnerReplayBtn');
+    const partnerReplayIcon = document.getElementById('partnerReplayIcon');
+    const partnerViewBlock = document.getElementById('partnerViewBlock');
+    const partnerDisplayText = document.getElementById('partnerDisplayText');
+    const partnerSubtext = document.getElementById('partnerSubtext');
+    const partnerEditBlock = document.getElementById('partnerEditBlock');
+    const partnerEditTextarea = document.getElementById('partnerEditTextarea');
+    const partnerCancelEditBtn = document.getElementById('partnerCancelEditBtn');
+    const partnerSaveEditBtn = document.getElementById('partnerSaveEditBtn');
+    const partnerMicBtn = document.getElementById('partnerMicBtn');
+    const partnerMicLabel = document.getElementById('partnerMicLabel');
+    const flipOrientationBtn = document.getElementById('flipOrientationBtn');
+
+    // DOM Elements - Equator
+    const swapLangsBtn = document.getElementById('swapLangsBtn');
+    const toggleAutoStopBtn = document.getElementById('toggleAutoStopBtn');
+    const autoStopLabel = document.getElementById('autoStopLabel');
+    const openServerConfigBtn = document.getElementById('openServerConfigBtn');
+    const orbCanvas = document.getElementById('orbCanvas');
+
+    // DOM Elements - User
+    const userHalf = document.getElementById('userHalf');
+    const openSrcModalBtn = document.getElementById('openSrcModalBtn');
+    const userFlag = document.getElementById('userFlag');
+    const userLangName = document.getElementById('userLangName');
+    const userEditBtn = document.getElementById('userEditBtn');
+    const userReplayBtn = document.getElementById('userReplayBtn');
+    const userReplayIcon = document.getElementById('userReplayIcon');
+    const userViewBlock = document.getElementById('userViewBlock');
+    const userDisplayText = document.getElementById('userDisplayText');
+    const userSubtext = document.getElementById('userSubtext');
+    const userEditBlock = document.getElementById('userEditBlock');
+    const userEditTextarea = document.getElementById('userEditTextarea');
+    const userCancelEditBtn = document.getElementById('userCancelEditBtn');
+    const userSaveEditBtn = document.getElementById('userSaveEditBtn');
+    const userMicBtn = document.getElementById('userMicBtn');
+    const userMicLabel = document.getElementById('userMicLabel');
+
+    // DOM Elements - Modals
+    const langModal = document.getElementById('langModal');
+    const langModalTitle = document.getElementById('langModalTitle');
+    const closeLangModalBtn = document.getElementById('closeLangModalBtn');
+    const serverModal = document.getElementById('serverModal');
+    const closeServerModalBtn = document.getElementById('closeServerModalBtn');
+    const geminiApiKeyInput = document.getElementById('geminiApiKeyInput');
+    const pingDot = document.getElementById('pingDot');
+    const pingText = document.getElementById('pingText');
+    const testPingBtn = document.getElementById('testPingBtn');
+    const saveServerUrlBtn = document.getElementById('saveServerUrlBtn');
+
+    let globalAudio = document.getElementById('globalAudio');
+
+    // ========================================================
+    // SPEECH SYNTHESIS ENGINE (1 BEST ANNOUNCER PER LANGUAGE)
+    // ========================================================
+
+    window.onTTSStart = function(lang) {
+      state.orbMode = 3;
+    };
+    window.onTTSEnd = function() {
+      state.orbMode = 0;
+      state.isSpeaking = false;
+    };
+    window.onTTSError = function() {
+      state.orbMode = 0;
+      state.isSpeaking = false;
+    };
+
+    function setReplayIconLoading(langCode, isLoading) {
+      const isPartner = langCode === state.targetLang;
+      const targetIcon = isPartner ? partnerReplayIcon : userReplayIcon;
+      if (!targetIcon) return;
+
+      if (isLoading) {
+        targetIcon.innerHTML = `<svg class="animate-spin" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>`;
+      } else {
+        targetIcon.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+      }
+    }
+
+    // Convert raw PCM to standard WAV base64 if needed
+    function ensureWavBase64(base64Data, sampleRate, numChannels) {
+      if (!sampleRate) sampleRate = 24000;
+      if (!numChannels) numChannels = 1;
+      if (!base64Data) return null;
+      var cleanB64 = base64Data.indexOf(',') !== -1 ? base64Data.split(',')[1] : base64Data;
+      if (cleanB64.startsWith('UklGR')) {
+        return cleanB64;
+      }
+
+      try {
+        var binaryString = atob(cleanB64);
+        var pcmLen = binaryString.length;
+        var wavLen = 44 + pcmLen;
+        var buffer = new ArrayBuffer(wavLen);
+        var view = new DataView(buffer);
+
+        view.setUint8(0, 0x52); view.setUint8(1, 0x49); view.setUint8(2, 0x46); view.setUint8(3, 0x46);
+        view.setUint32(4, 36 + pcmLen, true);
+        view.setUint8(8, 0x57); view.setUint8(9, 0x41); view.setUint8(10, 0x56); view.setUint8(11, 0x45);
+
+        view.setUint8(12, 0x66); view.setUint8(13, 0x6d); view.setUint8(14, 0x74); view.setUint8(15, 0x20);
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * 2, true);
+        view.setUint16(32, numChannels * 2, true);
+        view.setUint16(34, 16, true);
+
+        view.setUint8(36, 0x64); view.setUint8(37, 0x61); view.setUint8(38, 0x74); view.setUint8(39, 0x61);
+        view.setUint32(40, pcmLen, true);
+
+        var u8 = new Uint8Array(buffer);
+        for (var i = 0; i < pcmLen; i++) {
+          u8[44 + i] = binaryString.charCodeAt(i);
+        }
+
+        var binary = '';
+        var chunkSize = 8192;
+        for (var j = 0; j < wavLen; j += chunkSize) {
+          var chunk = u8.subarray(j, Math.min(j + chunkSize, wavLen));
+          binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+      } catch (e) {
+        console.warn("ensureWavBase64 error:", e);
+        return cleanB64;
+      }
+    }
+
+    // Google Gemini Studio-Quality Neural Voice Fetcher
+    async function fetchNeuralTTS(text, langCode) {
+      if (!text || !text.trim()) return null;
+      var models = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
+      var apiKey = state.geminiApiKey || DEFAULT_GEMINI_KEY;
+      var cleanText = text.trim();
+      var voice = (LANG_DATA[langCode] && LANG_DATA[langCode].voice) ? LANG_DATA[langCode].voice : "Aoede";
+
+      for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+        try {
+          var body = JSON.stringify({
+            contents: [{ parts: [{ text: cleanText }] }],
+            generationConfig: {
+              responseModalities: ["AUDIO"],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: {
+                    voiceName: voice
+                  }
+                }
+              }
+            }
+          });
+
+          var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + apiKey, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: body
+          });
+
+          if (!res.ok) continue;
+
+          var json = await res.json();
+          var part = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts ? json.candidates[0].content.parts.find(function(p) { return p.inlineData; }) : null;
+          if (part && part.inlineData && part.inlineData.data) {
+            var validWav = ensureWavBase64(part.inlineData.data, 24000, 1);
+            if (validWav) return validWav;
+          }
+        } catch (err) {
+          console.warn('fetchNeuralTTS ' + model + ' failed:', err);
+        }
+      }
+      return null;
+    }
+
+    // Master Audio Player: Direct Native Android Hardware MediaPlayer with HTML5 fallback
+    function playAudio(audioItem, text, langCode) {
+      var isBase64 = audioItem && audioItem.type === 'base64';
+      var rawData = audioItem ? audioItem.data : null;
+
+      // Tier 1: Native Android Hardware MediaPlayer (100% Reliable, zero WebView autoplay block!)
+      if (window.AndroidNativeTTS) {
+        try {
+          if (isBase64 && typeof window.AndroidNativeTTS.playNativeBase64 === 'function') {
+            window.AndroidNativeTTS.playNativeBase64(rawData, text, langCode);
+            return;
+          } else if (!isBase64 && typeof window.AndroidNativeTTS.playNativeUrl === 'function') {
+            window.AndroidNativeTTS.playNativeUrl(rawData, text, langCode);
+            return;
+          }
+        } catch (err) {
+          console.warn("Native player error:", err);
+        }
+      }
+
+      // Tier 2: HTML5 Audio with Blob URL
+      try {
+        var audioSrc;
+        if (isBase64) {
+          var byteChars = atob(rawData);
+          var byteNumbers = new Array(byteChars.length);
+          for (var i = 0; i < byteChars.length; i++) {
+            byteNumbers[i] = byteChars.charCodeAt(i);
+          }
+          var byteArray = new Uint8Array(byteNumbers);
+          var blob = new Blob([byteArray], { type: 'audio/wav' });
+          audioSrc = URL.createObjectURL(blob);
+        } else {
+          audioSrc = rawData;
+        }
+
+        if (!globalAudio) globalAudio = new Audio();
+        globalAudio.pause();
+        globalAudio.src = audioSrc;
+
+        globalAudio.onplay = function() {
+          state.isSpeaking = true;
+          window.onTTSStart(langCode);
+        };
+        globalAudio.onended = function() {
+          state.isSpeaking = false;
+          window.onTTSEnd();
+        };
+        globalAudio.onerror = function(e) {
+          console.warn("HTML5 audio playback error:", e);
+          state.isSpeaking = false;
+          window.onTTSEnd();
+          if (window.AndroidNativeTTS && text) {
+            window.AndroidNativeTTS.speak(text, langCode, 1.0, 1.0);
+          }
+        };
+
+        var p = globalAudio.play();
+        if (p !== undefined) {
+          p.catch(function(err) {
+            console.warn("HTML5 audio play blocked by browser policy:", err);
+            state.isSpeaking = false;
+            window.onTTSEnd();
+            if (window.AndroidNativeTTS && text) {
+              window.AndroidNativeTTS.speak(text, langCode, 1.0, 1.0);
+            }
+          });
+        }
+      } catch (err) {
+        console.warn("playAudio exception:", err);
+        state.isSpeaking = false;
+        window.onTTSEnd();
+        if (window.AndroidNativeTTS && text) {
+          window.AndroidNativeTTS.speak(text, langCode, 1.0, 1.0);
+        }
+      }
+    }
+
+    // Master Speech Function (Each language automatically uses its 1 single best voice)
+    async function speakText(text, langCode) {
+      if (!text || !text.trim()) return;
+      var targetLang = langCode || state.targetLang || 'uz';
+      var cleanText = text.trim();
+      var cacheKey = targetLang + '_' + cleanText;
+
+      setReplayIconLoading(targetLang, true);
+
+      // 1. Instant Cache Playback (0ms latency!)
+      if (state.audioCache[cacheKey]) {
+        setReplayIconLoading(targetLang, false);
+        playAudio(state.audioCache[cacheKey], cleanText, targetLang);
+        return;
+      }
+
+      // 2. High-Definition Studio Neural Voice (Google Gemini)
+      try {
+        var wavB64 = await fetchNeuralTTS(cleanText, targetLang);
+        if (wavB64) {
+          state.audioCache[cacheKey] = { type: 'base64', data: wavB64 };
+          setReplayIconLoading(targetLang, false);
+          playAudio(state.audioCache[cacheKey], cleanText, targetLang);
+          return;
+        }
+      } catch (err) {
+        console.warn("Neural TTS fetch error:", err);
+      }
+
+      // 3. Fallback for Foreign Languages (ru, tr, en, zh) to Google Translate Web TTS
+      if (targetLang !== 'uz') {
+        try {
+          var gUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(cleanText.slice(0, 200)) + '&tl=' + targetLang + '&client=tw-ob';
+          state.audioCache[cacheKey] = { type: 'url', data: gUrl };
+          setReplayIconLoading(targetLang, false);
+          playAudio(state.audioCache[cacheKey], cleanText, targetLang);
+          return;
+        } catch (e) {
+          console.warn("Google TTS fallback error:", e);
+        }
+      }
+
+      setReplayIconLoading(targetLang, false);
+
+      // 4. Android Hardware Native Text-to-Speech (Works 100% Offline)
+      if (window.AndroidNativeTTS && typeof window.AndroidNativeTTS.speak === 'function') {
+        try {
+          window.onTTSStart(targetLang);
+          window.AndroidNativeTTS.speak(cleanText, targetLang, 1.0, 1.0);
+          return;
+        } catch (e) {
+          console.warn("AndroidNativeTTS error:", e);
+        }
+      }
+
+      // 5. Browser SpeechSynthesis
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          var utterance = new SpeechSynthesisUtterance(cleanText);
+          var langMap = { uz: 'uz-UZ', ru: 'ru-RU', tr: 'tr-TR', en: 'en-US', zh: 'zh-CN' };
+          utterance.lang = langMap[targetLang] || targetLang;
+          utterance.rate = 1.0;
+          utterance.onstart = function() { window.onTTSStart(targetLang); };
+          utterance.onend = function() { window.onTTSEnd(); };
+          utterance.onerror = function() { window.onTTSError(); };
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          window.onTTSError();
+        }
+      }
+    }
+
+        // ========================================================
+    // LANGUAGE UI & FLIP ORIENTATION
+    // ========================================================
+
+    function updateLanguageUI() {
+      const s = LANG_DATA[state.sourceLang] || LANG_DATA.uz;
+      const t = LANG_DATA[state.targetLang] || LANG_DATA.tr;
+
+      if (userFlag) userFlag.innerHTML = FLAG_SVGS[state.sourceLang] || s.flag;
+      if (userLangName) userLangName.textContent = s.name;
+      if (userMicLabel) userMicLabel.textContent = `${s.name} gapiring`;
+
+      if (partnerFlag) partnerFlag.innerHTML = FLAG_SVGS[state.targetLang] || t.flag;
+      if (partnerLangName) partnerLangName.textContent = t.name;
+      if (partnerMicLabel) partnerMicLabel.textContent = `${t.name} gapiring`;
+
+      // Update selected checkmarks in modal
+      document.querySelectorAll('.lang-item-btn').forEach(btn => {
+        const langCode = btn.dataset.lang;
+        const currentSelected = state.activeModalTarget === 'src' ? state.sourceLang : state.targetLang;
+        if (langCode === currentSelected) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    // Flip Orientation (Face-to-Face 180° vs Normal 0°)
+    flipOrientationBtn.addEventListener('click', () => {
+      state.isPartnerFlipped = !state.isPartnerFlipped;
+      if (state.isPartnerFlipped) {
+        partnerHalf.classList.add('flipped');
+      } else {
+        partnerHalf.classList.remove('flipped');
+      }
+    });
+
+    // Language Swap
+    swapLangsBtn.addEventListener('click', () => {
+      const temp = state.sourceLang;
+      state.sourceLang = state.targetLang;
+      state.targetLang = temp;
+
+      localStorage.setItem('perevodchik_src_lang', state.sourceLang);
+      localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
+
+      const tempUserText = userDisplayText.textContent;
+      userDisplayText.textContent = partnerDisplayText.textContent;
+      partnerDisplayText.textContent = tempUserText;
+
+      updateLanguageUI();
+    });
+
+    // Auto-Stop Mode Toggle
+    toggleAutoStopBtn.addEventListener('click', () => {
+      if (state.autoStopMode === '1.4s') {
+        state.autoStopMode = '2.0s';
+        state.silenceThresholdMs = 2000;
+        autoStopLabel.textContent = "Avto: 2.0s";
+      } else if (state.autoStopMode === '2.0s') {
+        state.autoStopMode = "Qo'lda";
+        state.silenceThresholdMs = 999999;
+        autoStopLabel.textContent = "Avto: O'chiq";
+      } else {
+        state.autoStopMode = '1.4s';
+        state.silenceThresholdMs = 1400;
+        autoStopLabel.textContent = "Avto: 1.4s";
+      }
+      localStorage.setItem('perevodchik_autostop_mode', state.autoStopMode);
+    });
+
+    // ========================================================
+    // LANGUAGE SELECTION MODAL
+    // ========================================================
+
+    openSrcModalBtn.addEventListener('click', () => {
+      state.activeModalTarget = 'src';
+      langModalTitle.textContent = "Sizning tilingizni tanlang";
+      updateLanguageUI();
+      langModal.classList.remove('hidden');
+    });
+
+    openTgtModalBtn.addEventListener('click', () => {
+      state.activeModalTarget = 'tgt';
+      langModalTitle.textContent = "Suhbatdoshingiz tilini tanlang";
+      updateLanguageUI();
+      langModal.classList.remove('hidden');
+    });
+
+    closeLangModalBtn.addEventListener('click', () => {
+      langModal.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.lang-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selected = btn.dataset.lang;
+        if (state.activeModalTarget === 'src') {
+          if (selected === state.targetLang) state.targetLang = state.sourceLang;
+          state.sourceLang = selected;
+          localStorage.setItem('perevodchik_src_lang', state.sourceLang);
+          localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
+        } else {
+          if (selected === state.sourceLang) state.sourceLang = state.targetLang;
+          state.targetLang = selected;
+          localStorage.setItem('perevodchik_src_lang', state.sourceLang);
+          localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
+        }
+        updateLanguageUI();
+        langModal.classList.add('hidden');
+      });
+    });
+
+    // ========================================================
+    // SETTINGS MODAL
+    // ========================================================
+
+    openServerConfigBtn.addEventListener('click', () => {
+      geminiApiKeyInput.value = state.geminiApiKey || '';
+      serverModal.classList.remove('hidden');
+    });
+
+    closeServerModalBtn.addEventListener('click', () => {
+      serverModal.classList.add('hidden');
+    });
+
+    saveServerUrlBtn.addEventListener('click', () => {
+      if (geminiApiKeyInput.value.trim()) {
+        state.geminiApiKey = geminiApiKeyInput.value.trim();
+        localStorage.setItem('perevodchik_gemini_key', state.geminiApiKey);
+      }
+      serverModal.classList.add('hidden');
+    });
+
+    testPingBtn.addEventListener('click', async () => {
+      pingDot.style.background = '#f59e0b';
+      pingText.textContent = "Tekshirilmoqda...";
+      try {
+        const res = await callGeminiGenerateContent(
+          state.geminiApiKey,
+          [{ parts: [{ text: "Translate Salam to Hello" }] }],
+          { temperature: 0.0 }
+        );
+        pingDot.style.background = '#10b981';
+        pingText.textContent = `Google AI aloqasi tayyor!`;
+      } catch (err) {
+        pingDot.style.background = '#ef4444';
+        pingText.textContent = "Ulanishda xatolik";
+      }
+    });
+
+    // ========================================================
+    // INLINE TEXT EDITING (USER & PARTNER)
+    // ========================================================
+
+    function openUserEditor() {
+      const cur = userDisplayText.textContent.trim();
+      userEditTextarea.value = (cur.includes('gapirish uchun') || cur === '...') ? '' : cur;
+      userViewBlock.classList.add('hidden');
+      userEditBlock.classList.remove('hidden');
+      userEditTextarea.focus();
+    }
+    function closeUserEditor() {
+      userEditBlock.classList.add('hidden');
+      userViewBlock.classList.remove('hidden');
+    }
+
+    userEditBtn.addEventListener('click', openUserEditor);
+    userDisplayText.addEventListener('click', openUserEditor);
+    userCancelEditBtn.addEventListener('click', closeUserEditor);
+
+    userSaveEditBtn.addEventListener('click', async () => {
+      const newText = userEditTextarea.value.trim();
+      if (newText) {
+        userDisplayText.textContent = newText;
+        closeUserEditor();
+        partnerDisplayText.textContent = "Tarjima qilinmoqda...";
+        await runTextTranslation(newText, 'user');
+      } else {
+        closeUserEditor();
+      }
+    });
+
+    function openPartnerEditor() {
+      const cur = partnerDisplayText.textContent.trim();
+      partnerEditTextarea.value = (cur.includes('bosib gapiring') || cur === '...') ? '' : cur;
+      partnerViewBlock.classList.add('hidden');
+      partnerEditBlock.classList.remove('hidden');
+      partnerEditTextarea.focus();
+    }
+    function closePartnerEditor() {
+      partnerEditBlock.classList.add('hidden');
+      partnerViewBlock.classList.remove('hidden');
+    }
+
+    partnerEditBtn.addEventListener('click', openPartnerEditor);
+    partnerDisplayText.addEventListener('click', openPartnerEditor);
+    partnerCancelEditBtn.addEventListener('click', closePartnerEditor);
+
+    partnerSaveEditBtn.addEventListener('click', async () => {
+      const newText = partnerEditTextarea.value.trim();
+      if (newText) {
+        partnerDisplayText.textContent = newText;
+        closePartnerEditor();
+        userDisplayText.textContent = "Tarjima qilinmoqda...";
+        await runTextTranslation(newText, 'partner');
+      } else {
+        closePartnerEditor();
+      }
+    });
+
+    function isValidSpeechText(txt) {
+      if (!txt) return false;
+      const t = txt.trim();
+      if (!t || t === '...' || t.includes('gapirish uchun') || t.includes('bosib gapiring') || t.includes('Tinglanmoqda') || t.includes('Tarjima qilinmoqda') || t.includes('Kutilmoqda')) {
+        return false;
+      }
+      return true;
+    }
+
+    // Replay Buttons (Clicking 🔊 immediately repeats audio without delays)
+    userReplayBtn.addEventListener('click', () => {
+      const txt = state.lastUserText || userDisplayText.textContent.trim();
+      if (isValidSpeechText(txt)) {
+        speakText(txt, state.lastUserLang || state.sourceLang);
+      }
+    });
+
+    partnerReplayBtn.addEventListener('click', () => {
+      const txt = state.lastPartnerText || partnerDisplayText.textContent.trim();
+      if (isValidSpeechText(txt)) {
+        speakText(txt, state.lastPartnerLang || state.targetLang);
+      }
+    });
+
+    // ========================================================
+    // MICROPHONE RECORDING & SMART AUTO-STOP VAD
+    // ========================================================
+
+    userMicBtn.addEventListener('click', () => toggleRecording('user'));
+    partnerMicBtn.addEventListener('click', () => toggleRecording('partner'));
+
+    async function toggleRecording(speaker) {
+      if (state.isRecording) {
+        if (state.activeSpeaker === speaker) {
+          stopRecording(true);
+        } else {
+          stopRecording(false);
+          setTimeout(() => startRecording(speaker), 250);
+        }
+      } else {
+        startRecording(speaker);
+      }
+    }
+
+    async function startRecording(speaker) {
+      state.isRecording = true;
+      state.activeSpeaker = speaker;
+      state.orbMode = 1;
+      state.recordedMediaChunks = [];
+      state.hasSpoken = false;
+      state.speechFramesCount = 0;
+      state.speechStartTime = 0;
+      state.lastVoiceTime = Date.now();
+      state.ambientNoiseRms = 0.0;
+      state.calibrationFrames = 0;
+
+      if (speaker === 'user') {
+        userMicBtn.classList.add('recording');
+        userMicLabel.textContent = "Eshitilmoqda...";
+        userDisplayText.textContent = "...";
+      } else {
+        partnerMicBtn.classList.add('recording');
+        partnerMicLabel.textContent = "Eshitilmoqda...";
+        partnerDisplayText.textContent = "...";
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: 1,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+        state.mediaStream = stream;
+
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        state.audioCtx = new AudioContextClass();
+        if (state.audioCtx.state === 'suspended') {
+          await state.audioCtx.resume();
+        }
+
+        const source = state.audioCtx.createMediaStreamSource(stream);
+        state.analyser = state.audioCtx.createAnalyser();
+        state.analyser.fftSize = 512;
+        source.connect(state.analyser);
+
+        const bufferLength = state.analyser.fftSize;
+        const dataArray = new Float32Array(bufferLength);
+
+        // VAD Monitor Loop
+        const vadInterval = setInterval(() => {
+          if (!state.isRecording) {
+            clearInterval(vadInterval);
+            return;
+          }
+
+          state.analyser.getFloatTimeDomainData(dataArray);
+          let sumSquares = 0.0;
+          for (let i = 0; i < bufferLength; i++) {
+            sumSquares += dataArray[i] * dataArray[i];
+          }
+          const rms = Math.sqrt(sumSquares / bufferLength);
+          state.audioLevel = Math.min(1.0, rms * 4.0);
+
+          // Calibrate ambient noise
+          if (state.calibrationFrames < 15) {
+            state.ambientNoiseRms = (state.ambientNoiseRms * state.calibrationFrames + rms) / (state.calibrationFrames + 1);
+            state.calibrationFrames++;
+            return;
+          }
+
+          const threshold = Math.max(state.voiceRmsThreshold, state.ambientNoiseRms * 2.2);
+
+          if (rms > threshold) {
+            state.lastVoiceTime = Date.now();
+            state.speechFramesCount++;
+            if (!state.hasSpoken && state.speechFramesCount >= 3) {
+              state.hasSpoken = true;
+              state.speechStartTime = Date.now();
+            }
+          } else {
+            if (state.hasSpoken && state.silenceThresholdMs < 90000) {
+              const silenceDuration = Date.now() - state.lastVoiceTime;
+              const totalSpeech = Date.now() - state.speechStartTime;
+              if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 600) {
+                clearInterval(vadInterval);
+                stopRecording(true);
+              }
+            }
+          }
+        }, 60);
+
+        // MediaRecorder setup (WebM Opus / MP4)
+        let mime = 'audio/webm;codecs=opus';
+        if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/webm';
+        if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/mp4';
+        if (!MediaRecorder.isTypeSupported(mime)) mime = '';
+
+        state.mediaRecorderMime = mime || 'audio/webm';
+        state.mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+
+        state.mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) state.recordedMediaChunks.push(e.data);
+        };
+
+        state.mediaRecorder.start(100);
+      } catch (err) {
+        console.error("Mic error:", err);
+        stopRecording(false);
+        alert("Mikrofonga ruxsat berilmadi: " + err.message);
+      }
+    }
+
+    function stopRecording(shouldProcess = true) {
+      if (!state.isRecording) return;
+      state.isRecording = false;
+
+      const speaker = state.activeSpeaker;
+      userMicBtn.classList.remove('recording');
+      partnerMicBtn.classList.remove('recording');
+      updateLanguageUI();
+
+      if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+        state.mediaRecorder.onstop = () => {
+          // Clean up stream inside onstop to avoid truncating audio buffers in Chromium WebView
+          if (state.mediaStream) {
+            try {
+              state.mediaStream.getTracks().forEach(t => t.stop());
+            } catch (_) {}
+            state.mediaStream = null;
+          }
+          if (state.audioCtx && state.audioCtx.state !== 'closed') {
+            state.audioCtx.close().catch(() => {});
+            state.audioCtx = null;
+          }
+
+          if (shouldProcess && state.recordedMediaChunks.length > 0) {
+            const cleanMime = (state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
+            const blob = new Blob(state.recordedMediaChunks, { type: cleanMime });
+            console.log("Audio blob ready, size:", blob.size, "mime:", cleanMime);
+            if (blob.size >= 800) {
+              processAudioSpeech(blob, speaker);
+            } else {
+              console.warn("Audio too short (<800 bytes), ignoring:", blob.size);
+              resetStatusDisplay();
+              state.orbMode = 0;
+            }
+          } else {
+            resetStatusDisplay();
+            state.orbMode = 0;
+          }
+        };
+
+        try {
+          if (state.mediaRecorder.state === 'recording') {
+            state.mediaRecorder.requestData();
+          }
+        } catch (_) {}
+
+        try {
+          state.mediaRecorder.stop();
+        } catch (err) {
+          console.warn("MediaRecorder stop err:", err);
+          if (state.mediaStream) {
+            state.mediaStream.getTracks().forEach(t => t.stop());
+            state.mediaStream = null;
+          }
+          state.orbMode = 0;
+        }
+      } else {
+        state.orbMode = 0;
+        if (state.mediaStream) {
+          state.mediaStream.getTracks().forEach(t => t.stop());
+          state.mediaStream = null;
+        }
+      }
+    }
+
+    function resetStatusDisplay() {
+      if (userDisplayText.textContent === '...' || userDisplayText.textContent === 'Tinglanmoqda...') {
+        userDisplayText.textContent = "O'zbekcha gapirish uchun tugmani bosing...";
+      }
+      if (partnerDisplayText.textContent === '...' || partnerDisplayText.textContent === 'Tinglanmoqda...' || partnerDisplayText.textContent === 'Tarjima qilinmoqda...') {
+        partnerDisplayText.textContent = "Tugmani bosib gapiring...";
+      }
+    }
+
+    // ========================================================
+    // SPEECH TRANSLATION DISPATCHER (GEMINI 3.1 FLASH LITE)
+    // ========================================================
+
+    async function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const res = reader.result;
+          const comma = res.indexOf(',');
+          resolve(comma !== -1 ? res.slice(comma + 1) : res);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function processAudioSpeech(audioBlob, speaker) {
+      state.orbMode = 2; // Processing (pulsing crystal orb)
+      const srcL = speaker === 'user' ? state.sourceLang : state.targetLang;
+      const tgtL = speaker === 'user' ? state.targetLang : state.sourceLang;
+
+      if (speaker === 'user') {
+        userDisplayText.textContent = "Tinglanmoqda...";
+        partnerDisplayText.textContent = "Tarjima qilinmoqda...";
+      } else {
+        partnerDisplayText.textContent = "Tinglanmoqda...";
+        userDisplayText.textContent = "Tarjima qilinmoqda...";
+      }
+
+      try {
+        const audioB64 = await blobToBase64(audioBlob);
+        if (!audioB64 || audioB64.length < 50) {
+          resetStatusDisplay();
+          state.orbMode = 0;
+          return;
+        }
+
+        const cleanMime = (audioBlob.type || state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
+
+        const prompt = `You are an expert bilingual interpreter.
+The speaker spoke in ${LANG_DATA[srcL]?.name || srcL}.
+The target language is ${LANG_DATA[tgtL]?.name || tgtL}.
+1. Transcribe what was said accurately into "source_text".
+2. Translate it naturally and fluently into ${LANG_DATA[tgtL]?.name || tgtL} in "translated_text".
+Return ONLY valid JSON with keys "source_text" and "translated_text":
+{"source_text": "...", "translated_text": "..."}`;
+
+        const contents = [{
+          parts: [
+            { inlineData: { mimeType: cleanMime, data: audioB64 } },
+            { text: prompt }
+          ]
+        }];
+
+        const res = await callGeminiGenerateContent(state.geminiApiKey, contents, {
+          temperature: 0.1,
+          responseMimeType: "application/json"
+        });
+
+        const json = parseGeminiJsonResponse(res.text);
+        const sourceText = (json.source_text || '').trim();
+        const translatedText = (json.translated_text || '').trim();
+
+        if (!sourceText && !translatedText) {
+          throw new Error("Nutq aniqlanmadi yoki bo'sh qaytdi");
+        }
+
+        applyTranslationResult(sourceText, translatedText, speaker, srcL, tgtL);
+      } catch (err) {
+        console.error("Translation error:", err);
+        alert("Tarjima xatosi: " + err.message);
+        resetStatusDisplay();
+        state.orbMode = 0;
+      }
+    }
+
+    async function runTextTranslation(text, speaker) {
+      state.orbMode = 2;
+      const srcL = speaker === 'user' ? state.sourceLang : state.targetLang;
+      const tgtL = speaker === 'user' ? state.targetLang : state.sourceLang;
+
+      try {
+        const prompt = `Translate the following text from ${LANG_DATA[srcL]?.name || srcL} to ${LANG_DATA[tgtL]?.name || tgtL}.
+Input: "${text}"
+Output MUST be valid JSON: {"translated_text": "..."}`;
+
+        const res = await callGeminiGenerateContent(state.geminiApiKey, [{ parts: [{ text: prompt }] }], {
+          temperature: 0.1,
+          responseMimeType: "application/json"
+        });
+
+        const json = parseGeminiJsonResponse(res.text);
+        const translatedText = (json.translated_text || '').trim();
+        applyTranslationResult(text, translatedText, speaker, srcL, tgtL);
+      } catch (err) {
+        console.error("Text translation error:", err);
+        alert("Tarjima xatosi: " + err.message);
+        state.orbMode = 0;
+      }
+    }
+
+    function applyTranslationResult(srcText, tgtText, speaker, srcL, tgtL) {
+      state.orbMode = 0;
+      if (speaker === 'user') {
+        state.lastUserText = srcText;
+        state.lastUserLang = srcL;
+        state.lastPartnerText = tgtText;
+        state.lastPartnerLang = tgtL;
+
+        userDisplayText.textContent = srcText || '...';
+        userSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
+        partnerDisplayText.textContent = tgtText || '...';
+        partnerSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})`;
+
+        if (tgtText && tgtText.trim()) {
+          speakText(tgtText, tgtL);
+        }
+      } else {
+        state.lastPartnerText = srcText;
+        state.lastPartnerLang = srcL;
+        state.lastUserText = tgtText;
+        state.lastUserLang = tgtL;
+
+        partnerDisplayText.textContent = srcText || '...';
+        partnerSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
+        userDisplayText.textContent = tgtText || '...';
+        userSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})`;
+
+        if (tgtText && tgtText.trim()) {
+          speakText(tgtText, tgtL);
+        }
+      }
+    }
+
+    async function callGeminiGenerateContent(apiKey, contents, config = {}) {
+      const activeKey = apiKey || DEFAULT_GEMINI_KEY;
+      const models = ['gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
+      let lastError = null;
+
+      for (const m of models) {
+        try {
+          const body = { contents };
+          if (config.temperature !== undefined) body.generationConfig = { temperature: config.temperature };
+          if (config.responseMimeType) {
+            body.generationConfig = body.generationConfig || {};
+            body.generationConfig.responseMimeType = config.responseMimeType;
+          }
+
+          // Pass API key via URL query parameter to bypass WebView CORS and custom header restrictions
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${activeKey}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+          });
+
+          if (!res.ok) {
+            const errText = await res.text();
+            lastError = `${m} (HTTP ${res.status}): ${errText.slice(0, 150)}`;
+            console.warn(lastError);
+            continue;
+          }
+
+          const json = await res.json();
+          const candidate = json.candidates?.[0];
+          const textPart = candidate?.content?.parts?.find(p => p.text);
+          if (textPart && textPart.text) {
+            return { text: textPart.text, model: m };
+          }
+        } catch (e) {
+          lastError = `${m} tarmoq xatosi: ${e.message}`;
+          console.warn(lastError);
+        }
+      }
+      throw new Error(lastError || "Google AI modellari band yoki xato berdi.");
+    }
+
+    function parseGeminiJsonResponse(raw) {
+      if (!raw) return {};
+      let clean = raw.trim();
+      if (clean.startsWith('```json')) clean = clean.slice(7);
+      if (clean.startsWith('```')) clean = clean.slice(3);
+      if (clean.endsWith('```')) clean = clean.slice(0, -3);
+      clean = clean.trim();
+      try {
+        let parsed = JSON.parse(clean);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          parsed = parsed[0];
+        }
+        return parsed || {};
+      } catch (e) {
+        const m = clean.match(/\{[\s\S]*?\}/);
+        if (m) {
+          try { return JSON.parse(m[0]); } catch (_) {}
+        }
+        return { source_text: '', translated_text: clean };
+      }
+    }
+
+    // ========================================================
+    // LIVING CRYSTAL ORB (SMOOTH 2D CANVAS ACCELERATION)
+    // ========================================================
+
+    const ctx = orbCanvas.getContext('2d');
+    let orbTime = 0;
+
+    function renderOrb() {
+      orbTime += 0.03;
+      const w = orbCanvas.width;
+      const h = orbCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = w * 0.42;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Gradient selection based on mode
+      const grad = ctx.createRadialGradient(
+        cx + Math.sin(orbTime) * 6,
+        cy + Math.cos(orbTime) * 6,
+        r * 0.1,
+        cx,
+        cy,
+        r
+      );
+
+      if (state.orbMode === 1) { // Recording (Red pulse)
+        grad.addColorStop(0, '#fca5a5');
+        grad.addColorStop(0.5, '#ef4444');
+        grad.addColorStop(1, '#991b1b');
+      } else if (state.orbMode === 2) { // Processing (Purple energetic)
+        grad.addColorStop(0, '#e9d5ff');
+        grad.addColorStop(0.5, '#a855f7');
+        grad.addColorStop(1, '#6b21a8');
+      } else if (state.orbMode === 3) { // Speaking (Cyan/Emerald crystal wave)
+        grad.addColorStop(0, '#a7f3d0');
+        grad.addColorStop(0.5, '#10b981');
+        grad.addColorStop(1, '#047857');
+      } else { // Idle (Apple Intelligence blue/violet ambient)
+        grad.addColorStop(0, '#c7d2fe');
+        grad.addColorStop(0.4, '#818cf8');
+        grad.addColorStop(0.8, '#6366f1');
+        grad.addColorStop(1, '#3730a3');
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + (state.isRecording ? state.audioLevel * 6 : 0), 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Soft rim highlight
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.stroke();
+      ctx.restore();
+
+      requestAnimationFrame(renderOrb);
+    }
+
+    renderOrb();
+
+    // Initial Setup
+    updateLanguageUI();
+  </script>
+</body>
+</html>

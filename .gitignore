@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+android/app/build/
+android/.gradle/
+android/captures/
+android/.idea/
+android/*.iml
+
+# OS and temporary files
+.DS_Store
+Thumbs.db
+*.log
+*.wav
+*.mp3
+.github/
+
+

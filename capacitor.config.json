@@ -1,0 +1,12 @@
+{
+  "appId": "com.ovozli.tarjimon",
+  "appName": "Ovozli Tarjimon",
+  "webDir": "www",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
