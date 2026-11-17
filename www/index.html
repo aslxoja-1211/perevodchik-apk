@@ -724,8 +724,10 @@
       <div style="display:flex; flex-direction:column; gap:12px;">
         <div>
           <label style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Google Gemini API Kaliti:</label>
-          <input type="password" id="geminiApiKeyInput" placeholder="Standart AI kaliti faol" class="input-field" />
-          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">Ilovada rasmiy bepul Google AI kaliti o'rnatilgan.</p>
+          <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." class="input-field" />
+          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">
+            Bepul kalit olish: <b style="color:var(--partner-blue);">aistudio.google.com/apikey</b>
+          </p>
         </div>
 
         <div style="padding:12px; border-radius:14px; background:#f8fafc; border:1px solid rgba(0,0,0,0.06); font-size:12px; display:flex; align-items:center; justify-content:space-between;">
@@ -1276,9 +1278,12 @@
     });
 
     saveServerUrlBtn.addEventListener('click', () => {
-      if (geminiApiKeyInput.value.trim()) {
-        state.geminiApiKey = geminiApiKeyInput.value.trim();
-        localStorage.setItem('perevodchik_gemini_key', state.geminiApiKey);
+      const val = geminiApiKeyInput.value.trim();
+      if (val) {
+        state.geminiApiKey = val;
+        try { localStorage.setItem('perevodchik_gemini_key', val); } catch (_) {}
+        state.audioCache = {};
+        alert("API kalit saqlandi! Endi bemalol gapirishingiz mumkin.");
       }
       serverModal.classList.add('hidden');
     });
@@ -1660,7 +1665,14 @@ Return ONLY valid JSON with keys "source_text" and "translated_text":
         applyTranslationResult(sourceText, translatedText, speaker, srcL, tgtL);
       } catch (err) {
         console.error("Translation error:", err);
-        alert("Tarjima xatosi: " + err.message);
+        const msg = String(err.message || '');
+        if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
+          alert("Google API Kaliti xatosi (HTTP 401):\nKalit eskirgan yoki bloklangan.\n\nIltimos, ochilayotgan Sozlamalar darchasiga aistudio.google.com dan olgan yangi bepul kalitingizni kiriting.");
+          geminiApiKeyInput.value = state.geminiApiKey || '';
+          serverModal.classList.remove('hidden');
+        } else {
+          alert("Tarjima xatosi: " + msg);
+        }
         resetStatusDisplay();
         state.orbMode = 0;
       }
@@ -1686,7 +1698,14 @@ Output MUST be valid JSON: {"translated_text": "..."}`;
         applyTranslationResult(text, translatedText, speaker, srcL, tgtL);
       } catch (err) {
         console.error("Text translation error:", err);
-        alert("Tarjima xatosi: " + err.message);
+        const msg = String(err.message || '');
+        if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
+          alert("Google API Kaliti xatosi (HTTP 401):\nKalit eskirgan yoki bloklangan.\n\nIltimos, ochilayotgan Sozlamalar darchasiga aistudio.google.com dan olgan yangi bepul kalitingizni kiriting.");
+          geminiApiKeyInput.value = state.geminiApiKey || '';
+          serverModal.classList.remove('hidden');
+        } else {
+          alert("Tarjima xatosi: " + msg);
+        }
         state.orbMode = 0;
       }
     }
