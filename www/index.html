@@ -574,12 +574,12 @@
             <span id="partnerReplayIcon">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             </span>
-            <span>Eshitish</span>
+            <span id="partnerReplayText">Eshitish</span>
           </button>
 
           <button id="partnerEditBtn" class="mini-action-btn" title="Matnni to'g'irlash" type="button">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            <span>To'g'irlash</span>
+            <span id="partnerEditText">To'g'irlash</span>
           </button>
 
           <button id="flipOrientationBtn" class="icon-btn" title="Ekranni aylantirish" type="button">
@@ -668,12 +668,12 @@
             <span id="userReplayIcon">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             </span>
-            <span>Eshitish</span>
+            <span id="userReplayText">Eshitish</span>
           </button>
 
           <button id="userEditBtn" class="mini-action-btn" title="Matnni to'g'irlash" type="button">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            <span>To'g'irlash</span>
+            <span id="userEditText">To'g'irlash</span>
           </button>
         </div>
       </div>
@@ -794,7 +794,7 @@
   <div id="serverModal" class="modal-overlay hidden">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3 class="modal-title">Sozlamalar</h3>
+        <h3 id="settingsModalTitle" class="modal-title">Sozlamalar</h3>
         <button id="closeServerModalBtn" class="icon-btn" style="width:32px; height:32px;" type="button">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -810,9 +810,9 @@
         </div>
 
         <div>
-          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Shaxsiy Gemini API Kaliti (ixtiyoriy):</label>
+          <label id="customKeyLabel" style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Shaxsiy Gemini API Kaliti (ixtiyoriy):</label>
           <input type="password" id="geminiApiKeyInput" placeholder="Bo'sh qoldiring (rasmiy server ishlaydi)" class="input-field" />
-          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">
+          <p id="customKeyHint" style="font-size:11px; color:var(--text-sub); margin-top:4px;">
             Standart holatda xavfsiz bulut serveri ishlaydi. Shaxsiy kalit kiritish shart emas.
           </p>
         </div>
@@ -846,6 +846,271 @@
       en: { name: "English", flag: "🇬🇧", voice: "Aoede" },
       zh: { name: "中文", flag: "🇨🇳", voice: "Aoede" }
     };
+
+    // Smart Dual-Language UI Dictionary (Partner half = Partner's language, User half & Menus = User's language!)
+    const I18N = {
+      uz: {
+        listen: "Eshitish",
+        edit: "To'g'irlash",
+        editPlaceholder: "Matnni to'g'irlang...",
+        cancel: "Bekor qilish",
+        retranslate: "Qayta tarjima",
+        tapToSpeak: "Tugmani bosib gapiring...",
+        yourSide: "(Sizning tomoningiz)",
+        partnerSide: "(Suhbatdoshingiz tili)",
+        speakLang: "O'zbekcha gapiring",
+        listening: "Gapiring...",
+        analyzing: "Tahlil qilinmoqda...",
+        translating: "Tarjima qilinmoqda...",
+        spokenLabel: "Aytilgan nutq",
+        translatedLabel: "Tarjima",
+        autoPrefix: "Avto",
+        autoOff: "O'chiq",
+        chooseYourLang: "Sizning tilingizni tanlang",
+        choosePartnerLang: "Suhbatdoshingiz tilini tanlang",
+        settings: "Sozlamalar",
+        cloudActive: "Himoyalangan bulut serveri faol",
+        checking: "Tekshirilmoqda...",
+        checkBtn: "Tekshirish",
+        cloudReady: "Bulut serveri tayyor",
+        customKeyReady: "Shaxsiy kalit tayyor",
+        connError: "Ulanishda xatolik",
+        customKeyLabel: "Shaxsiy Gemini API Kaliti (ixtiyoriy):",
+        customKeyPlaceholder: "Bo'sh qoldiring (rasmiy server ishlaydi)",
+        customKeyHint: "Standart holatda xavfsiz bulut serveri ishlaydi. Shaxsiy kalit kiritish shart emas.",
+        save: "Saqlash",
+        toastFaceToFace: "Yuzma-yuz rejim yoqildi",
+        toastNormalView: "Oddiy ko'rinish yoqildi",
+        toastAutoFast: "Avto-to'xtash: 0.9 soniya (Tez)",
+        toastAutoNormal: "Avto-to'xtash: 1.4 soniya (Normal)",
+        toastManual: "Qo'lda to'xtatish rejimi",
+        toastKeySaved: "Shaxsiy API kalit saqlandi!",
+        toastCloudEnabled: "Himoyalangan bulut serveri faollashtirildi!",
+        toastOffline: "Internet uzildi — aloqani tekshiring",
+        toastOnline: "Internet qayta ulandi",
+        toastNoInternet: "Internet yo'q — tarjima uchun internet kerak",
+        toastTooShort: "Juda qisqa — biroz aniqroq gapiring",
+        toastNoSpeech: "Nutq eshitilmadi — aniqroq gapiring",
+        toastRetrying: "Qayta ulanilmoqda...",
+        toastMicDenied: "Mikrofonga ruxsat berilmadi",
+        toastApi401: "API kalit eskirgan (401). Sozlamalarda yangilang.",
+        toastSlowNet: "Internet juda sust — qayta urinib ko'ring",
+        toastBusy: "Google AI vaqtincha band — 2 soniyadan so'ng urinib ko'ring"
+      },
+      ru: {
+        listen: "Слушать",
+        edit: "Изменить",
+        editPlaceholder: "Исправьте текст...",
+        cancel: "Отмена",
+        retranslate: "Перевести",
+        tapToSpeak: "Нажмите и говорите...",
+        yourSide: "(Ваша сторона)",
+        partnerSide: "(Язык собеседника)",
+        speakLang: "Говорите по-русски",
+        listening: "Говорите...",
+        analyzing: "Обработка...",
+        translating: "Перевод...",
+        spokenLabel: "Речь",
+        translatedLabel: "Перевод",
+        autoPrefix: "Авто",
+        autoOff: "Выкл",
+        chooseYourLang: "Выберите ваш язык",
+        choosePartnerLang: "Выберите язык собеседника",
+        settings: "Настройки",
+        cloudActive: "Защищённый облачный сервер активен",
+        checking: "Проверка...",
+        checkBtn: "Проверить",
+        cloudReady: "Облачный сервер готов",
+        customKeyReady: "Личный ключ готов",
+        connError: "Ошибка подключения",
+        customKeyLabel: "Личный Gemini API ключ (необязательно):",
+        customKeyPlaceholder: "Оставьте пустым (работает сервер)",
+        customKeyHint: "По умолчанию работает защищённый сервер. Вводить ключ не нужно.",
+        save: "Сохранить",
+        toastFaceToFace: "Режим лицом к лицу включён",
+        toastNormalView: "Обычный режим включён",
+        toastAutoFast: "Авто-стоп: 0.9 сек (Быстро)",
+        toastAutoNormal: "Авто-стоп: 1.4 сек (Норма)",
+        toastManual: "Ручной режим остановки",
+        toastKeySaved: "Личный API ключ сохранён!",
+        toastCloudEnabled: "Защищённый сервер активирован!",
+        toastOffline: "Нет интернета — проверьте сеть",
+        toastOnline: "Интернет восстановлен",
+        toastNoInternet: "Нет интернета для перевода",
+        toastTooShort: "Слишком коротко — скажите чётче",
+        toastNoSpeech: "Речь не распознана — повторите",
+        toastRetrying: "Повторное подключение...",
+        toastMicDenied: "Нет доступа к микрофону",
+        toastApi401: "API ключ недействителен (401)",
+        toastSlowNet: "Слабый интернет — попробуйте снова",
+        toastBusy: "Сервер временно занят — повторите"
+      },
+      tr: {
+        listen: "Dinle",
+        edit: "Düzenle",
+        editPlaceholder: "Metni düzenleyin...",
+        cancel: "İptal",
+        retranslate: "Tekrar çevir",
+        tapToSpeak: "Konuşmak için dokunun...",
+        yourSide: "(Sizin tarafınız)",
+        partnerSide: "(Karşı tarafın dili)",
+        speakLang: "Türkçe konuşun",
+        listening: "Konuşun...",
+        analyzing: "Analiz ediliyor...",
+        translating: "Çevriliyor...",
+        spokenLabel: "Konuşma",
+        translatedLabel: "Çeviri",
+        autoPrefix: "Oto",
+        autoOff: "Kapalı",
+        chooseYourLang: "Dilinizi seçin",
+        choosePartnerLang: "Karşı tarafın dilini seçin",
+        settings: "Ayarlar",
+        cloudActive: "Güvenli bulut sunucusu aktif",
+        checking: "Kontrol ediliyor...",
+        checkBtn: "Test et",
+        cloudReady: "Bulut sunucusu hazır",
+        customKeyReady: "Kişisel anahtar hazır",
+        connError: "Bağlantı hatası",
+        customKeyLabel: "Kişisel Gemini API Anahtarı (isteğe bağlı):",
+        customKeyPlaceholder: "Boş bırakın (resmi sunucu çalışır)",
+        customKeyHint: "Varsayılan olarak güvenli bulut sunucusu çalışır. Anahtar gerekmez.",
+        save: "Kaydet",
+        toastFaceToFace: "Yüz yüze mod açıldı",
+        toastNormalView: "Normal görünüm açıldı",
+        toastAutoFast: "Oto-durdurma: 0.9 sn (Hızlı)",
+        toastAutoNormal: "Oto-durdurma: 1.4 sn (Normal)",
+        toastManual: "Manuel durdurma modu",
+        toastKeySaved: "Kişisel API anahtarı kaydedildi!",
+        toastCloudEnabled: "Güvenli bulut sunucusu etkin!",
+        toastOffline: "İnternet kesildi — bağlantıyı kontrol edin",
+        toastOnline: "İnternet tekrar bağlandı",
+        toastNoInternet: "Çeviri için internet gerekli",
+        toastTooShort: "Çok kısa — biraz daha net konuşun",
+        toastNoSpeech: "Ses algılanmadı — tekrar deneyin",
+        toastRetrying: "Yeniden bağlanılıyor...",
+        toastMicDenied: "Mikrofon izni verilmedi",
+        toastApi401: "API anahtarı geçersiz (401)",
+        toastSlowNet: "İnternet çok yavaş — tekrar deneyin",
+        toastBusy: "Sunucu geçici olarak meşgul"
+      },
+      en: {
+        listen: "Listen",
+        edit: "Edit",
+        editPlaceholder: "Edit text...",
+        cancel: "Cancel",
+        retranslate: "Translate",
+        tapToSpeak: "Tap to speak...",
+        yourSide: "(Your side)",
+        partnerSide: "(Partner's language)",
+        speakLang: "Speak English",
+        listening: "Speak now...",
+        analyzing: "Processing...",
+        translating: "Translating...",
+        spokenLabel: "Spoken",
+        translatedLabel: "Translation",
+        autoPrefix: "Auto",
+        autoOff: "Off",
+        chooseYourLang: "Select your language",
+        choosePartnerLang: "Select partner's language",
+        settings: "Settings",
+        cloudActive: "Secure cloud server active",
+        checking: "Checking...",
+        checkBtn: "Test",
+        cloudReady: "Cloud server ready",
+        customKeyReady: "Custom key ready",
+        connError: "Connection error",
+        customKeyLabel: "Custom Gemini API Key (optional):",
+        customKeyPlaceholder: "Leave empty (uses secure server)",
+        customKeyHint: "Protected cloud server is active by default. No API key required.",
+        save: "Save",
+        toastFaceToFace: "Face-to-face mode enabled",
+        toastNormalView: "Standard view enabled",
+        toastAutoFast: "Auto-stop: 0.9s (Fast)",
+        toastAutoNormal: "Auto-stop: 1.4s (Normal)",
+        toastManual: "Manual stop mode",
+        toastKeySaved: "Custom API key saved!",
+        toastCloudEnabled: "Secure cloud server enabled!",
+        toastOffline: "Offline — check internet connection",
+        toastOnline: "Back online",
+        toastNoInternet: "Internet required for translation",
+        toastTooShort: "Too short — please speak clearly",
+        toastNoSpeech: "No speech detected — try again",
+        toastRetrying: "Reconnecting...",
+        toastMicDenied: "Microphone permission denied",
+        toastApi401: "Invalid API key (401)",
+        toastSlowNet: "Slow connection — please retry",
+        toastBusy: "AI server busy — try again shortly"
+      },
+      zh: {
+        listen: "收听",
+        edit: "编辑",
+        editPlaceholder: "修改文本...",
+        cancel: "取消",
+        retranslate: "重新翻译",
+        tapToSpeak: "点击说话...",
+        yourSide: "(您的一侧)",
+        partnerSide: "(对方语言)",
+        speakLang: "请说中文",
+        listening: "请说话...",
+        analyzing: "识别中...",
+        translating: "翻译中...",
+        spokenLabel: "原话",
+        translatedLabel: "翻译",
+        autoPrefix: "自动",
+        autoOff: "关闭",
+        chooseYourLang: "选择您的语言",
+        choosePartnerLang: "选择对方语言",
+        settings: "设置",
+        cloudActive: "安全云服务器已启用",
+        checking: "检测中...",
+        checkBtn: "测试",
+        cloudReady: "云服务器正常",
+        customKeyReady: "自定义密钥正常",
+        connError: "连接失败",
+        customKeyLabel: "自定义 Gemini API 密钥 (可选):",
+        customKeyPlaceholder: "留空即可（使用安全服务器）",
+        customKeyHint: "默认使用安全云服务器，无需填写密钥。",
+        save: "保存",
+        toastFaceToFace: "已开启面对面模式",
+        toastNormalView: "已开启普通视图",
+        toastAutoFast: "自动停止: 0.9秒 (快速)",
+        toastAutoNormal: "自动停止: 1.4秒 (标准)",
+        toastManual: "手动停止模式",
+        toastKeySaved: "自定义 API 密钥已保存！",
+        toastCloudEnabled: "已切换至安全云服务器！",
+        toastOffline: "网络已断开，请检查连接",
+        toastOnline: "网络已恢复",
+        toastNoInternet: "需要网络连接才能翻译",
+        toastTooShort: "语音太短，请清晰说话",
+        toastNoSpeech: "未检测到语音，请重试",
+        toastRetrying: "正在重新连接...",
+        toastMicDenied: "未获得麦克风权限",
+        toastApi401: "API 密钥无效 (401)",
+        toastSlowNet: "网络较慢，请重试",
+        toastBusy: "服务器繁忙，请稍后再试"
+      }
+    };
+
+    function t(lang, key) {
+      const pack = I18N[lang] || I18N.uz;
+      return pack[key] !== undefined ? pack[key] : (I18N.uz[key] || '');
+    }
+
+    function isPlaceholderOrStatus(txt) {
+      if (!txt) return true;
+      const clean = txt.trim();
+      if (!clean || clean === '...') return true;
+      for (const code in I18N) {
+        const p = I18N[code];
+        if (clean === p.tapToSpeak || clean === p.analyzing || clean === p.translating || clean === p.listening) {
+          return true;
+        }
+      }
+      if (clean.includes('gapirish uchun') || clean.includes('bosib gapiring') || clean.includes('Tinglanmoqda')) {
+        return true;
+      }
+      return false;
+    }
 
     // Secure Vercel Cloud Proxy (API keys live encrypted on server, NEVER inside APK!)
     const PROXY_API_BASE = 'https://ovozli-tarjimon-api.vercel.app';
@@ -943,10 +1208,10 @@
 
     // Real-time network status notifications
     window.addEventListener('offline', () => {
-      showToast("Internet uzildi — aloqani tekshiring", "warning", 3500);
+      showToast(t(state.sourceLang, 'toastOffline'), "warning", 3500);
     });
     window.addEventListener('online', () => {
-      showToast("Internet qayta ulandi", "success", 2000);
+      showToast(t(state.sourceLang, 'toastOnline'), "success", 2000);
     });
 
     // ========================================================
@@ -1065,8 +1330,10 @@
     const partnerFlag = document.getElementById('partnerFlag');
     const partnerLangName = document.getElementById('partnerLangName');
     const partnerEditBtn = document.getElementById('partnerEditBtn');
+    const partnerEditText = document.getElementById('partnerEditText');
     const partnerReplayBtn = document.getElementById('partnerReplayBtn');
     const partnerReplayIcon = document.getElementById('partnerReplayIcon');
+    const partnerReplayText = document.getElementById('partnerReplayText');
     const partnerViewBlock = document.getElementById('partnerViewBlock');
     const partnerDisplayText = document.getElementById('partnerDisplayText');
     const partnerSubtext = document.getElementById('partnerSubtext');
@@ -1091,8 +1358,10 @@
     const userFlag = document.getElementById('userFlag');
     const userLangName = document.getElementById('userLangName');
     const userEditBtn = document.getElementById('userEditBtn');
+    const userEditText = document.getElementById('userEditText');
     const userReplayBtn = document.getElementById('userReplayBtn');
     const userReplayIcon = document.getElementById('userReplayIcon');
+    const userReplayText = document.getElementById('userReplayText');
     const userViewBlock = document.getElementById('userViewBlock');
     const userDisplayText = document.getElementById('userDisplayText');
     const userSubtext = document.getElementById('userSubtext');
@@ -1108,7 +1377,10 @@
     const langModalTitle = document.getElementById('langModalTitle');
     const closeLangModalBtn = document.getElementById('closeLangModalBtn');
     const serverModal = document.getElementById('serverModal');
+    const settingsModalTitle = document.getElementById('settingsModalTitle');
     const closeServerModalBtn = document.getElementById('closeServerModalBtn');
+    const customKeyLabel = document.getElementById('customKeyLabel');
+    const customKeyHint = document.getElementById('customKeyHint');
     const geminiApiKeyInput = document.getElementById('geminiApiKeyInput');
     const pingDot = document.getElementById('pingDot');
     const pingText = document.getElementById('pingText');
@@ -1492,25 +1764,62 @@
     // ========================================================
 
     function updateLanguageUI() {
-      const s = LANG_DATA[state.sourceLang] || LANG_DATA.uz;
-      const t = LANG_DATA[state.targetLang] || LANG_DATA.tr;
+      const srcL = state.sourceLang || 'uz';
+      const tgtL = state.targetLang || 'tr';
+      const s = LANG_DATA[srcL] || LANG_DATA.uz;
+      const tgt = LANG_DATA[tgtL] || LANG_DATA.tr;
 
-      if (userFlag) userFlag.innerHTML = FLAG_SVGS[state.sourceLang] || s.flag;
+      // 1. User Half (Bottom) -> User's chosen language
+      if (userFlag) userFlag.innerHTML = FLAG_SVGS[srcL] || s.flag;
       if (userLangName) userLangName.textContent = s.name;
-      if (userMicLabel) userMicLabel.textContent = `${s.name} gapiring`;
-
-      if (partnerFlag) partnerFlag.innerHTML = FLAG_SVGS[state.targetLang] || t.flag;
-      if (partnerLangName) partnerLangName.textContent = t.name;
-      if (partnerMicLabel) partnerMicLabel.textContent = `${t.name} gapiring`;
-
-      if (autoStopLabel) {
-        autoStopLabel.textContent = state.autoStopMode === "Qo'lda" ? "Avto: O'chiq" : `Avto: ${state.autoStopMode}`;
+      if (userMicLabel && !state.isRecording) userMicLabel.textContent = t(srcL, 'speakLang');
+      if (userReplayText) userReplayText.textContent = t(srcL, 'listen');
+      if (userEditText) userEditText.textContent = t(srcL, 'edit');
+      if (userEditTextarea) userEditTextarea.placeholder = t(srcL, 'editPlaceholder');
+      if (userCancelEditBtn) userCancelEditBtn.textContent = t(srcL, 'cancel');
+      if (userSaveEditBtn) userSaveEditBtn.textContent = t(srcL, 'retranslate');
+      if (!state.lastUserText && userDisplayText && isPlaceholderOrStatus(userDisplayText.textContent)) {
+        userDisplayText.textContent = t(srcL, 'tapToSpeak');
+      }
+      if (!state.lastUserText && userSubtext) {
+        userSubtext.textContent = t(srcL, 'yourSide');
       }
 
-      // Update selected checkmarks in modal
+      // 2. Partner Half (Top, facing partner) -> Partner's chosen language!
+      if (partnerFlag) partnerFlag.innerHTML = FLAG_SVGS[tgtL] || tgt.flag;
+      if (partnerLangName) partnerLangName.textContent = tgt.name;
+      if (partnerMicLabel && !state.isRecording) partnerMicLabel.textContent = t(tgtL, 'speakLang');
+      if (partnerReplayText) partnerReplayText.textContent = t(tgtL, 'listen');
+      if (partnerEditText) partnerEditText.textContent = t(tgtL, 'edit');
+      if (partnerEditTextarea) partnerEditTextarea.placeholder = t(tgtL, 'editPlaceholder');
+      if (partnerCancelEditBtn) partnerCancelEditBtn.textContent = t(tgtL, 'cancel');
+      if (partnerSaveEditBtn) partnerSaveEditBtn.textContent = t(tgtL, 'retranslate');
+      if (!state.lastPartnerText && partnerDisplayText && isPlaceholderOrStatus(partnerDisplayText.textContent)) {
+        partnerDisplayText.textContent = t(tgtL, 'tapToSpeak');
+      }
+      if (!state.lastPartnerText && partnerSubtext) {
+        partnerSubtext.textContent = t(tgtL, 'partnerSide');
+      }
+
+      // 3. Equator & Settings Modal -> User's chosen language
+      if (autoStopLabel) {
+        const prefix = t(srcL, 'autoPrefix');
+        autoStopLabel.textContent = state.autoStopMode === "Qo'lda"
+          ? `${prefix}: ${t(srcL, 'autoOff')}`
+          : `${prefix}: ${state.autoStopMode}`;
+      }
+      if (settingsModalTitle) settingsModalTitle.textContent = t(srcL, 'settings');
+      if (pingText && !pingText.textContent.includes('ms)')) pingText.textContent = t(srcL, 'cloudActive');
+      if (testPingBtn) testPingBtn.textContent = t(srcL, 'checkBtn');
+      if (customKeyLabel) customKeyLabel.textContent = t(srcL, 'customKeyLabel');
+      if (geminiApiKeyInput) geminiApiKeyInput.placeholder = t(srcL, 'customKeyPlaceholder');
+      if (customKeyHint) customKeyHint.textContent = t(srcL, 'customKeyHint');
+      if (saveServerUrlBtn) saveServerUrlBtn.textContent = t(srcL, 'save');
+
+      // 4. Update selected checkmarks in modal
       document.querySelectorAll('.lang-item-btn').forEach(btn => {
         const langCode = btn.dataset.lang;
-        const currentSelected = state.activeModalTarget === 'src' ? state.sourceLang : state.targetLang;
+        const currentSelected = state.activeModalTarget === 'src' ? srcL : tgtL;
         if (langCode === currentSelected) {
           btn.classList.add('selected');
         } else {
@@ -1525,10 +1834,10 @@
       state.isPartnerFlipped = !state.isPartnerFlipped;
       if (state.isPartnerFlipped) {
         partnerHalf.classList.add('flipped');
-        showToast("Yuzma-yuz rejim yoqildi", "info", 1500);
+        showToast(t(state.sourceLang, 'toastFaceToFace'), "info", 1500);
       } else {
         partnerHalf.classList.remove('flipped');
-        showToast("Oddiy ko'rinish yoqildi", "info", 1500);
+        showToast(t(state.sourceLang, 'toastNormalView'), "info", 1500);
       }
     });
 
@@ -1542,10 +1851,6 @@
       localStorage.setItem('perevodchik_src_lang', state.sourceLang);
       localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
 
-      const tempUserText = userDisplayText.textContent;
-      userDisplayText.textContent = partnerDisplayText.textContent;
-      partnerDisplayText.textContent = tempUserText;
-
       const tmpLast = state.lastUserText;
       state.lastUserText = state.lastPartnerText;
       state.lastPartnerText = tmpLast;
@@ -1553,29 +1858,31 @@
       state.lastUserLang = state.lastPartnerLang;
       state.lastPartnerLang = tmpLang;
 
+      userDisplayText.textContent = state.lastUserText || t(state.sourceLang, 'tapToSpeak');
+      partnerDisplayText.textContent = state.lastPartnerText || t(state.targetLang, 'tapToSpeak');
+
       updateLanguageUI();
     });
 
     // Auto-Stop Mode Toggle (0.9s Tez -> 1.4s Normal -> Qo'lda)
     toggleAutoStopBtn.addEventListener('click', () => {
       haptic(14);
+      const srcL = state.sourceLang;
       if (state.autoStopMode === '0.9s') {
         state.autoStopMode = '1.4s';
         state.silenceThresholdMs = 1400;
-        autoStopLabel.textContent = "Avto: 1.4s";
-        showToast("Avto-to'xtash: 1.4 soniya (Normal)", "info", 1500);
+        showToast(t(srcL, 'toastAutoNormal'), "info", 1500);
       } else if (state.autoStopMode === '1.4s') {
         state.autoStopMode = "Qo'lda";
         state.silenceThresholdMs = 999999;
-        autoStopLabel.textContent = "Avto: O'chiq";
-        showToast("Qo'lda to'xtatish rejimi", "info", 1500);
+        showToast(t(srcL, 'toastManual'), "info", 1500);
       } else {
         state.autoStopMode = '0.9s';
         state.silenceThresholdMs = 900;
-        autoStopLabel.textContent = "Avto: 0.9s";
-        showToast("Avto-to'xtash: 0.9 soniya (Tez)", "success", 1500);
+        showToast(t(srcL, 'toastAutoFast'), "success", 1500);
       }
       localStorage.setItem('perevodchik_autostop_mode_v2', state.autoStopMode);
+      updateLanguageUI();
     });
 
     // ========================================================
@@ -1584,14 +1891,14 @@
 
     openSrcModalBtn.addEventListener('click', () => {
       state.activeModalTarget = 'src';
-      langModalTitle.textContent = "Sizning tilingizni tanlang";
+      langModalTitle.textContent = t(state.sourceLang, 'chooseYourLang');
       updateLanguageUI();
       langModal.classList.remove('hidden');
     });
 
     openTgtModalBtn.addEventListener('click', () => {
       state.activeModalTarget = 'tgt';
-      langModalTitle.textContent = "Suhbatdoshingiz tilini tanlang";
+      langModalTitle.textContent = t(state.sourceLang, 'choosePartnerLang');
       updateLanguageUI();
       langModal.classList.remove('hidden');
     });
@@ -1615,6 +1922,10 @@
           localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
         }
         state.conversationHistory = [];
+        state.lastUserText = '';
+        state.lastPartnerText = '';
+        userDisplayText.textContent = t(state.sourceLang, 'tapToSpeak');
+        partnerDisplayText.textContent = t(state.targetLang, 'tapToSpeak');
         updateLanguageUI();
         langModal.classList.add('hidden');
       });
@@ -1626,6 +1937,7 @@
 
     openServerConfigBtn.addEventListener('click', () => {
       geminiApiKeyInput.value = state.geminiApiKey || '';
+      updateLanguageUI();
       serverModal.classList.remove('hidden');
     });
 
@@ -1642,14 +1954,15 @@
         else localStorage.removeItem('perevodchik_custom_gemini_key');
       } catch (_) {}
       state.audioCache = {};
-      showToast(val ? "Shaxsiy API kalit saqlandi!" : "Himoyalangan bulut serveri faollashtirildi!", "success");
+      showToast(val ? t(state.sourceLang, 'toastKeySaved') : t(state.sourceLang, 'toastCloudEnabled'), "success");
       serverModal.classList.add('hidden');
     });
 
     testPingBtn.addEventListener('click', async () => {
       haptic(12);
+      const srcL = state.sourceLang;
       pingDot.style.background = '#f59e0b';
-      pingText.textContent = "Tekshirilmoqda...";
+      pingText.textContent = t(srcL, 'checking');
       const t0 = Date.now();
       try {
         if (!state.geminiApiKey) {
@@ -1657,10 +1970,10 @@
           const j = await r.json();
           if (r.ok && j.ok) {
             pingDot.style.background = '#10b981';
-            pingText.textContent = `Bulut serveri tayyor (${Date.now() - t0}ms)`;
+            pingText.textContent = `${t(srcL, 'cloudReady')} (${Date.now() - t0}ms)`;
             return;
           }
-          throw new Error("Server javob bermadi");
+          throw new Error("Server error");
         }
         await callGeminiGenerateContent(
           state.geminiApiKey,
@@ -1668,10 +1981,10 @@
           { temperature: 0.0, maxOutputTokens: 20 }
         );
         pingDot.style.background = '#10b981';
-        pingText.textContent = `Shaxsiy kalit tayyor (${Date.now() - t0}ms)`;
+        pingText.textContent = `${t(srcL, 'customKeyReady')} (${Date.now() - t0}ms)`;
       } catch (err) {
         pingDot.style.background = '#ef4444';
-        pingText.textContent = "Ulanishda xatolik";
+        pingText.textContent = t(srcL, 'connError');
       }
     });
 
@@ -1681,7 +1994,7 @@
 
     function openUserEditor() {
       const cur = userDisplayText.textContent.trim();
-      userEditTextarea.value = (cur.includes('gapirish uchun') || cur === '...') ? '' : cur;
+      userEditTextarea.value = isPlaceholderOrStatus(cur) ? '' : cur;
       userViewBlock.classList.add('hidden');
       userEditBlock.classList.remove('hidden');
       userEditTextarea.focus();
@@ -1700,7 +2013,7 @@
       if (newText) {
         userDisplayText.textContent = newText;
         closeUserEditor();
-        partnerDisplayText.textContent = "Tarjima qilinmoqda...";
+        partnerDisplayText.textContent = t(state.targetLang, 'translating');
         await runTextTranslation(newText, 'user');
       } else {
         closeUserEditor();
@@ -1709,7 +2022,7 @@
 
     function openPartnerEditor() {
       const cur = partnerDisplayText.textContent.trim();
-      partnerEditTextarea.value = (cur.includes('bosib gapiring') || cur === '...') ? '' : cur;
+      partnerEditTextarea.value = isPlaceholderOrStatus(cur) ? '' : cur;
       partnerViewBlock.classList.add('hidden');
       partnerEditBlock.classList.remove('hidden');
       partnerEditTextarea.focus();
@@ -1728,7 +2041,7 @@
       if (newText) {
         partnerDisplayText.textContent = newText;
         closePartnerEditor();
-        userDisplayText.textContent = "Tarjima qilinmoqda...";
+        userDisplayText.textContent = t(state.sourceLang, 'translating');
         await runTextTranslation(newText, 'partner');
       } else {
         closePartnerEditor();
@@ -1736,12 +2049,7 @@
     });
 
     function isValidSpeechText(txt) {
-      if (!txt) return false;
-      const t = txt.trim();
-      if (!t || t === '...' || t.includes('gapirish uchun') || t.includes('bosib gapiring') || t.includes('Tinglanmoqda') || t.includes('Tahlil qilinmoqda') || t.includes('Tarjima qilinmoqda') || t.includes('Kutilmoqda')) {
-        return false;
-      }
-      return true;
+      return !isPlaceholderOrStatus(txt);
     }
 
     // Replay Buttons (Clicking 🔊 immediately repeats audio without delays)
@@ -1784,7 +2092,7 @@
     async function startRecording(speaker) {
       if (navigator.onLine === false) {
         haptic(40);
-        showToast("Internet yo'q — tarjima uchun internet kerak", "warning", 3000);
+        showToast(t(state.sourceLang, 'toastNoInternet'), "warning", 3000);
         return;
       }
       state.activeRequestId++;
@@ -1806,11 +2114,11 @@
       const activeBtn = speaker === 'user' ? userMicBtn : partnerMicBtn;
       if (speaker === 'user') {
         userMicBtn.classList.add('recording');
-        userMicLabel.textContent = "Gapiring...";
+        userMicLabel.textContent = t(state.sourceLang, 'listening');
         userDisplayText.textContent = "...";
       } else {
         partnerMicBtn.classList.add('recording');
-        partnerMicLabel.textContent = "Gapiring...";
+        partnerMicLabel.textContent = t(state.targetLang, 'listening');
         partnerDisplayText.textContent = "...";
       }
 
@@ -1909,7 +2217,7 @@
         console.error("Mic error:", err);
         stopRecording(false);
         haptic(40);
-        showToast("Mikrofonga ruxsat berilmadi: " + err.message, "error", 3500);
+        showToast(t(state.sourceLang, 'toastMicDenied') + ": " + err.message, "error", 3500);
       }
     }
 
@@ -1953,7 +2261,7 @@
               console.warn("Audio too short (<350 bytes), ignoring:", blob.size);
               resetStatusDisplay();
               state.orbMode = 0;
-              showToast("Juda qisqa — biroz aniqroq gapiring", "warning", 1800);
+              showToast(t(state.sourceLang, 'toastTooShort'), "warning", 1800);
             }
           } else {
             resetStatusDisplay();
@@ -1987,11 +2295,11 @@
     }
 
     function resetStatusDisplay() {
-      if (userDisplayText.textContent === '...' || userDisplayText.textContent === 'Tinglanmoqda...' || userDisplayText.textContent === 'Tahlil qilinmoqda...' || userDisplayText.textContent === 'Tarjima qilinmoqda...') {
-        userDisplayText.textContent = state.lastUserText || "O'zbekcha gapirish uchun tugmani bosing...";
+      if (isPlaceholderOrStatus(userDisplayText.textContent)) {
+        userDisplayText.textContent = state.lastUserText || t(state.sourceLang, 'tapToSpeak');
       }
-      if (partnerDisplayText.textContent === '...' || partnerDisplayText.textContent === 'Tinglanmoqda...' || partnerDisplayText.textContent === 'Tahlil qilinmoqda...' || partnerDisplayText.textContent === 'Tarjima qilinmoqda...') {
-        partnerDisplayText.textContent = state.lastPartnerText || "Tugmani bosib gapiring...";
+      if (isPlaceholderOrStatus(partnerDisplayText.textContent)) {
+        partnerDisplayText.textContent = state.lastPartnerText || t(state.targetLang, 'tapToSpeak');
       }
     }
 
@@ -2071,19 +2379,20 @@
 
     function handleTranslationError(err) {
       haptic(45);
+      const srcL = state.sourceLang;
       const msg = String(err && err.message ? err.message : err || '');
       if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
-        showToast("API kalit eskirgan (401). Sozlamalarda yangilang.", "error", 4500);
+        showToast(t(srcL, 'toastApi401'), "error", 4500);
         geminiApiKeyInput.value = state.geminiApiKey || '';
         serverModal.classList.remove('hidden');
       } else if (msg.includes('AbortError') || msg.includes('aborted')) {
-        showToast("Internet juda sust — qayta urinib ko'ring", "warning", 3200);
+        showToast(t(srcL, 'toastSlowNet'), "warning", 3200);
       } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
-        showToast("Internet aloqasi yo'q", "error", 3200);
+        showToast(t(srcL, 'toastOffline'), "error", 3200);
       } else if (msg.includes('503') || msg.includes('429')) {
-        showToast("Google AI vaqtincha band — 2 soniyadan so'ng urinib ko'ring", "warning", 3200);
+        showToast(t(srcL, 'toastBusy'), "warning", 3200);
       } else {
-        showToast("Xatolik: " + msg.slice(0, 90), "error", 3500);
+        showToast(msg.slice(0, 90), "error", 3500);
       }
     }
 
@@ -2095,11 +2404,11 @@
       const tgtL = speaker === 'user' ? state.targetLang : state.sourceLang;
 
       if (speaker === 'user') {
-        userDisplayText.textContent = "Tahlil qilinmoqda...";
-        partnerDisplayText.textContent = "Tarjima qilinmoqda...";
+        userDisplayText.textContent = t(srcL, 'analyzing');
+        partnerDisplayText.textContent = t(tgtL, 'translating');
       } else {
-        partnerDisplayText.textContent = "Tahlil qilinmoqda...";
-        userDisplayText.textContent = "Tarjima qilinmoqda...";
+        partnerDisplayText.textContent = t(srcL, 'analyzing');
+        userDisplayText.textContent = t(tgtL, 'translating');
       }
 
       try {
@@ -2143,7 +2452,7 @@ Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech"
         if (json.no_speech === true || (!sourceText && !translatedText)) {
           resetStatusDisplay();
           state.orbMode = 0;
-          showToast("Nutq eshitilmadi — aniqroq gapiring", "warning", 2200);
+          showToast(t(state.sourceLang, 'toastNoSpeech'), "warning", 2200);
           return;
         }
 
@@ -2176,7 +2485,7 @@ Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech"
       }
 
       if (navigator.onLine === false) {
-        showToast("Internet yo'q — matnni tarjima qilib bo'lmadi", "warning", 3000);
+        showToast(t(state.sourceLang, 'toastNoInternet'), "warning", 3000);
         return;
       }
 
@@ -2254,10 +2563,10 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
         userDisplayText.textContent = srcText || '...';
         animateTextReveal(userDisplayText);
-        userSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
+        userSubtext.textContent = `${t(srcL, 'spokenLabel')} (${LANG_DATA[srcL]?.name || srcL})`;
         partnerDisplayText.textContent = tgtText || '...';
         animateTextReveal(partnerDisplayText);
-        partnerSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
+        partnerSubtext.textContent = `${t(tgtL, 'translatedLabel')} (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
@@ -2270,10 +2579,10 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
         partnerDisplayText.textContent = srcText || '...';
         animateTextReveal(partnerDisplayText);
-        partnerSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
+        partnerSubtext.textContent = `${t(srcL, 'spokenLabel')} (${LANG_DATA[srcL]?.name || srcL})`;
         userDisplayText.textContent = tgtText || '...';
         animateTextReveal(userDisplayText);
-        userSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
+        userSubtext.textContent = `${t(tgtL, 'translatedLabel')} (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
@@ -2332,7 +2641,7 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
           }
 
           if (attempt === 1 && (reqId === null || reqId === state.activeRequestId)) {
-            showToast("Qayta ulanilmoqda...", "info", 1500);
+            showToast(t(state.sourceLang, 'toastRetrying'), "info", 1500);
             await sleepMs(600);
           }
         }
@@ -2403,7 +2712,7 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
       if (res1) return res1;
 
       if (sawRetryable && (reqId === null || reqId === state.activeRequestId)) {
-        showToast("Qayta ulanilmoqda...", "info", 1500);
+        showToast(t(state.sourceLang, 'toastRetrying'), "info", 1500);
         await sleepMs(650);
         const res2 = await tryModelList(pass2Models, 9000);
         if (res2) return res2;
