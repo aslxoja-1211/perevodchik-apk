@@ -1,10 +1,16 @@
-const { applyCors, verifyClient, getGeminiKeys, fetchWithTimeout } = require('./_shared');
+const {
+  applyCors,
+  verifyClient,
+  checkRateLimit,
+  getGeminiKeysRotated,
+  sanitizeError,
+  fetchWithTimeout
+} = require('./_shared');
 
 const TTS_MODELS = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
 
-// Warm-instance in-memory LRU cache for common Uzbek phrases (0ms instant hit!)
 const memCache = new Map();
-const MAX_CACHE = 40;
+const MAX_CACHE = 50;
 
 module.exports = async function handler(req, res) {
   if (applyCors(req, res)) return;
@@ -12,28 +18,30 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
   if (!verifyClient(req, res)) return;
+  if (!checkRateLimit(req, res)) return;
 
-  const keys = getGeminiKeys();
+  const keys = getGeminiKeysRotated();
   if (keys.length === 0) {
     return res.status(500).json({ ok: false, error: 'Serverda GEMINI_API_KEY sozlanmagan' });
   }
 
   const body = req.body || {};
   const text = (body.text || '').trim();
-  const voice = (body.voice || 'Aoede').trim();
+  const voice = (body.voice || 'Aoede').trim().slice(0, 32);
 
   if (!text) {
     return res.status(400).json({ ok: false, error: 'Missing text' });
   }
 
-  const cacheKey = `${voice}:${text.toLowerCase()}`;
+  const safeText = text.slice(0, 400);
+  const cacheKey = `${voice}:${safeText.toLowerCase()}`;
   if (memCache.has(cacheKey)) {
     const cached = memCache.get(cacheKey);
     return res.status(200).json({ ok: true, audioBase64: cached.data, mimeType: cached.mimeType, cached: true });
   }
 
   const payloadStr = JSON.stringify({
-    contents: [{ parts: [{ text: text.slice(0, 400) }] }],
+    contents: [{ parts: [{ text: safeText }] }],
     generationConfig: {
       responseModalities: ['AUDIO'],
       speechConfig: {
@@ -66,7 +74,7 @@ module.exports = async function handler(req, res) {
         if (!gRes.ok) {
           const errText = await gRes.text();
           lastStatus = gRes.status;
-          lastError = `${model} (HTTP ${gRes.status}): ${errText.slice(0, 120)}`;
+          lastError = sanitizeError(`${model} (HTTP ${gRes.status}): ${errText}`);
           if (gRes.status === 401 || gRes.status === 403 || gRes.status === 429) {
             break;
           }
@@ -78,7 +86,7 @@ module.exports = async function handler(req, res) {
         if (part) {
           const audioBase64 = part.inlineData.data;
           const mimeType = part.inlineData.mimeType || 'audio/wav';
-          if (text.length <= 120) {
+          if (safeText.length <= 120) {
             if (memCache.size >= MAX_CACHE) {
               memCache.delete(memCache.keys().next().value);
             }
@@ -87,7 +95,7 @@ module.exports = async function handler(req, res) {
           return res.status(200).json({ ok: true, audioBase64, mimeType, model });
         }
       } catch (err) {
-        lastError = `${model}: ${err.name === 'AbortError' ? 'timeout' : err.message}`;
+        lastError = sanitizeError(`${model}: ${err.name === 'AbortError' ? 'timeout' : err.message}`);
       }
     }
   }

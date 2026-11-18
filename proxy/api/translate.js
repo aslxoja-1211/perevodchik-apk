@@ -1,4 +1,11 @@
-const { applyCors, verifyClient, getGeminiKeys, fetchWithTimeout } = require('./_shared');
+const {
+  applyCors,
+  verifyClient,
+  checkRateLimit,
+  getGeminiKeysRotated,
+  sanitizeError,
+  fetchWithTimeout
+} = require('./_shared');
 
 const TRANSLATE_MODELS = [
   'gemini-3.1-flash-lite',
@@ -7,21 +14,24 @@ const TRANSLATE_MODELS = [
   'gemini-3.8-flash'
 ];
 
+const MAX_PAYLOAD_BYTES = 1_600_000; // 1.6 MB max payload guard
+
 module.exports = async function handler(req, res) {
   if (applyCors(req, res)) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
   if (!verifyClient(req, res)) return;
+  if (!checkRateLimit(req, res)) return;
 
-  const keys = getGeminiKeys();
+  const keys = getGeminiKeysRotated();
   if (keys.length === 0) {
     return res.status(500).json({ ok: false, error: 'Serverda GEMINI_API_KEY sozlanmagan' });
   }
 
   const body = req.body || {};
-  if (!body.contents || !Array.isArray(body.contents)) {
-    return res.status(400).json({ ok: false, error: 'Missing contents array' });
+  if (!body.contents || !Array.isArray(body.contents) || body.contents.length === 0 || body.contents.length > 3) {
+    return res.status(400).json({ ok: false, error: 'Invalid contents payload' });
   }
 
   const payload = {
@@ -33,11 +43,13 @@ module.exports = async function handler(req, res) {
     }
   };
   const payloadStr = JSON.stringify(payload);
+  if (payloadStr.length > MAX_PAYLOAD_BYTES) {
+    return res.status(413).json({ ok: false, error: 'Audio hajmi juda katta (maks 1.5MB)' });
+  }
 
   let lastStatus = 502;
   let lastError = 'Google AI javob bermadi';
 
-  // Multi-key + multi-model automatic failover
   for (let kIdx = 0; kIdx < keys.length; kIdx++) {
     const apiKey = keys[kIdx];
     for (const model of TRANSLATE_MODELS) {
@@ -55,12 +67,10 @@ module.exports = async function handler(req, res) {
         if (!gRes.ok) {
           const errText = await gRes.text();
           lastStatus = gRes.status;
-          lastError = `${model} (HTTP ${gRes.status}): ${errText.slice(0, 160)}`;
-          // If this key is unauthorized/rate-limited, jump to next key
+          lastError = sanitizeError(`${model} (HTTP ${gRes.status}): ${errText}`);
           if (gRes.status === 401 || gRes.status === 403 || gRes.status === 429) {
             break;
           }
-          // Invalid audio/argument won't be fixed by another model
           if (gRes.status === 400) {
             return res.status(400).json({ ok: false, error: lastError });
           }
@@ -81,7 +91,7 @@ module.exports = async function handler(req, res) {
           });
         }
       } catch (err) {
-        lastError = `${model}: ${err.name === 'AbortError' ? 'timeout' : err.message}`;
+        lastError = sanitizeError(`${model}: ${err.name === 'AbortError' ? 'timeout' : err.message}`);
       }
     }
   }
