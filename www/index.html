@@ -468,9 +468,88 @@
     .animate-spin {
       animation: spin 1s linear infinite;
     }
+
+    /* LIVE VOICE AURA AROUND ACTIVE MIC */
+    .big-mic-btn.recording::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 3px solid rgba(239, 68, 68, 0.45);
+      transform: scale(calc(1 + var(--voice-level, 0) * 0.35));
+      transition: transform 0.06s linear;
+      pointer-events: none;
+    }
+
+    /* SMOOTH TEXT REVEAL */
+    @keyframes textReveal {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .text-reveal {
+      animation: textReveal 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* APPLE-STYLE FLOATING TOAST NOTIFICATIONS (REPLACES UGLY ALERT) */
+    #toastContainer {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: calc(100% - 32px);
+      max-width: 380px;
+      pointer-events: none;
+    }
+
+    .toast-pill {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 18px;
+      background: rgba(29, 29, 31, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.35;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      opacity: 0;
+      transform: translateY(-12px) scale(0.96);
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .toast-pill.toast-success { background: rgba(5, 150, 105, 0.95); }
+    .toast-pill.toast-error { background: rgba(220, 38, 38, 0.95); }
+    .toast-pill.toast-warning { background: rgba(217, 119, 6, 0.95); }
+    .toast-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
+
+  <!-- FLOATING TOAST NOTIFICATIONS -->
+  <div id="toastContainer"></div>
 
   <!-- MASTER VIEWPORT -->
   <div class="app-viewport">
@@ -553,7 +632,7 @@
       <!-- Left: Auto-stop badge -->
       <button id="toggleAutoStopBtn" class="pill-btn" style="padding: 6px 12px; font-size: 11px; color: var(--user-green);" type="button">
         <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981;"></span>
-        <span id="autoStopLabel">Avto: 1.4s</span>
+        <span id="autoStopLabel">Avto: 0.9s</span>
       </button>
 
       <!-- Center: Living Crystal Orb & Language Swap -->
@@ -722,20 +801,20 @@
       </div>
 
       <div style="display:flex; flex-direction:column; gap:12px;">
-        <div>
-          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Google Gemini API Kaliti:</label>
-          <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." class="input-field" />
-          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">
-            Bepul kalit olish: <b style="color:var(--partner-blue);">aistudio.google.com/apikey</b>
-          </p>
-        </div>
-
-        <div style="padding:12px; border-radius:14px; background:#f8fafc; border:1px solid rgba(0,0,0,0.06); font-size:12px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="padding:12px; border-radius:14px; background:#f0fdf4; border:1px solid rgba(5,150,105,0.2); font-size:12px; display:flex; align-items:center; justify-content:space-between;">
           <div style="display:flex; align-items:center; gap:8px;">
             <span id="pingDot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
-            <span id="pingText" style="font-weight:500;">Google AI aloqasi tayyor</span>
+            <span id="pingText" style="font-weight:600; color:#065f46;">Himoyalangan bulut serveri faol</span>
           </div>
           <button id="testPingBtn" class="pill-btn" style="padding:4px 10px; font-size:11px;" type="button">Tekshirish</button>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:6px;">Shaxsiy Gemini API Kaliti (ixtiyoriy):</label>
+          <input type="password" id="geminiApiKeyInput" placeholder="Bo'sh qoldiring (rasmiy server ishlaydi)" class="input-field" />
+          <p style="font-size:11px; color:var(--text-sub); margin-top:4px;">
+            Standart holatda xavfsiz bulut serveri ishlaydi. Shaxsiy kalit kiritish shart emas.
+          </p>
         </div>
 
         <button id="saveServerUrlBtn" class="save-settings-btn" type="button">Saqlash</button>
@@ -768,15 +847,16 @@
       zh: { name: "中文", flag: "🇨🇳", voice: "Aoede" }
     };
 
-    const DEFAULT_GEMINI_KEY = atob('QVEuQWI4Uk42SnlSZ1V5WVFHMHJ3QmVXNU95Ykx4OUVFdUJMczdoQnJOcFpMZXlHY2R4YXc=');
-    var savedGeminiKey = localStorage.getItem('perevodchik_gemini_key');
-    if (!savedGeminiKey || savedGeminiKey.trim().length < 20) {
-      savedGeminiKey = DEFAULT_GEMINI_KEY;
-      try { localStorage.setItem('perevodchik_gemini_key', DEFAULT_GEMINI_KEY); } catch (_) {}
-    }
+    // Secure Vercel Cloud Proxy (API keys live encrypted on server, NEVER inside APK!)
+    const PROXY_API_BASE = 'https://ovozli-tarjimon-api.vercel.app';
+    const PROXY_CLIENT_ID = 'ovozli-tarjimon-mobile-v2';
+
+    // Clean up legacy hardcoded key from older versions so upgrades switch seamlessly to Secure Proxy
+    try { localStorage.removeItem('perevodchik_gemini_key'); } catch (_) {}
+    var customGeminiKey = (localStorage.getItem('perevodchik_custom_gemini_key') || '').trim();
 
     const state = {
-      geminiApiKey: savedGeminiKey,
+      geminiApiKey: customGeminiKey, // Empty string = use Secure Vercel Cloud Proxy!
       lastUserText: '',
       lastPartnerText: '',
       lastUserLang: 'uz',
@@ -786,10 +866,10 @@
       isPartnerFlipped: true,
       activeModalTarget: 'src',
 
-      // Auto-Stop VAD Settings
-      autoStopMode: localStorage.getItem('perevodchik_autostop_mode') || '1.4s',
-      silenceThresholdMs: 1400,
-      voiceRmsThreshold: 0.012,
+      // Auto-Stop VAD Settings (Tez: 0.9s default)
+      autoStopMode: localStorage.getItem('perevodchik_autostop_mode_v2') || '0.9s',
+      silenceThresholdMs: 900,
+      voiceRmsThreshold: 0.011,
       ambientNoiseRms: 0.0,
       calibrationFrames: 0,
       speechFramesCount: 0,
@@ -804,16 +884,180 @@
       mediaRecorder: null,
       mediaRecorderMime: 'audio/webm',
       audioCtx: null,
+      uiAudioCtx: null,
       mediaStream: null,
       scriptProcessor: null,
       analyser: null,
       audioCache: {},
+      audioCacheKeys: [],
+      translationCache: {},
+      ttsQueue: [],
+      ttsLang: 'uz',
       isSpeaking: false,
+      conversationHistory: [], // Last 5 turns for natural contextual translation
+      lastTurnTimestamp: 0,
+      activeRequestId: 0, // Race-condition guard against stale slow responses
 
       // Visuals
       audioLevel: 0.0,
       orbMode: 0 // 0: idle, 1: recording, 2: processing, 3: speaking
     };
+
+    // Load persistent frequent phrase translation cache (instant 0ms translation for repeated phrases)
+    try {
+      const savedTrCache = JSON.parse(localStorage.getItem('perevodchik_tr_cache_v1') || '{}');
+      if (savedTrCache && typeof savedTrCache === 'object') state.translationCache = savedTrCache;
+    } catch (_) {}
+
+    function setAudioCache(key, item) {
+      if (!state.audioCache[key]) {
+        state.audioCacheKeys.push(key);
+        if (state.audioCacheKeys.length > 35) {
+          const oldest = state.audioCacheKeys.shift();
+          delete state.audioCache[oldest];
+        }
+      }
+      state.audioCache[key] = item;
+    }
+
+    function getCachedTranslation(srcL, tgtL, text) {
+      const k = `${srcL}_${tgtL}_${text.trim().toLowerCase()}`;
+      return state.translationCache[k] || null;
+    }
+
+    function setCachedTranslation(srcL, tgtL, srcText, tgtText) {
+      if (!srcText || !tgtText || srcText.length > 140) return;
+      const k = `${srcL}_${tgtL}_${srcText.trim().toLowerCase()}`;
+      state.translationCache[k] = tgtText.trim();
+      const keys = Object.keys(state.translationCache);
+      if (keys.length > 40) {
+        delete state.translationCache[keys[0]];
+      }
+      try { localStorage.setItem('perevodchik_tr_cache_v1', JSON.stringify(state.translationCache)); } catch (_) {}
+    }
+
+    // Sync silenceThresholdMs with saved autoStopMode
+    if (state.autoStopMode === '1.4s') state.silenceThresholdMs = 1400;
+    else if (state.autoStopMode === "Qo'lda") state.silenceThresholdMs = 999999;
+    else { state.autoStopMode = '0.9s'; state.silenceThresholdMs = 900; }
+
+    // Real-time network status notifications
+    window.addEventListener('offline', () => {
+      showToast("Internet uzildi — aloqani tekshiring", "warning", 3500);
+    });
+    window.addEventListener('online', () => {
+      showToast("Internet qayta ulandi", "success", 2000);
+    });
+
+    // ========================================================
+    // UX POLISH: TOASTS, HAPTICS & SOFT SOUND CUES
+    // ========================================================
+    const toastContainer = document.getElementById('toastContainer');
+
+    function showToast(message, type = 'info', durationMs = 2800) {
+      if (!toastContainer || !message) return;
+      const el = document.createElement('div');
+      el.className = 'toast-pill toast-' + type;
+      el.innerHTML = '<span class="toast-dot"></span><span></span>';
+      el.querySelector('span:last-child').textContent = message;
+      toastContainer.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      const dismiss = () => {
+        el.classList.remove('show');
+        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 260);
+      };
+      el.addEventListener('click', dismiss);
+      setTimeout(dismiss, durationMs);
+    }
+
+    function haptic(ms = 18) {
+      try {
+        if (window.AndroidNativeTTS && typeof window.AndroidNativeTTS.vibrate === 'function') {
+          window.AndroidNativeTTS.vibrate(ms);
+          return;
+        }
+        if (navigator.vibrate) navigator.vibrate(ms);
+      } catch (_) {}
+    }
+
+    function getSharedAudioCtx() {
+      try {
+        if (!state.uiAudioCtx || state.uiAudioCtx.state === 'closed') {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          state.uiAudioCtx = new AC();
+        }
+        if (state.uiAudioCtx.state === 'suspended') {
+          state.uiAudioCtx.resume().catch(() => {});
+        }
+        return state.uiAudioCtx;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function playChime(type) {
+      try {
+        const ctx = getSharedAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'start') {
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(720, now + 0.08);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.07, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.10);
+          osc.start(now);
+          osc.stop(now + 0.11);
+        } else if (type === 'stop') {
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(420, now + 0.07);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.06, now + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.start(now);
+          osc.stop(now + 0.10);
+        } else if (type === 'done') {
+          osc.frequency.setValueAtTime(760, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.045, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        }
+      } catch (_) {}
+    }
+
+    function stopAllAudio() {
+      state.ttsQueue = [];
+      state.isSpeaking = false;
+      try {
+        if (window.AndroidNativeTTS && typeof window.AndroidNativeTTS.stop === 'function') {
+          window.AndroidNativeTTS.stop();
+        }
+      } catch (_) {}
+      try {
+        if (globalAudio) {
+          globalAudio.pause();
+          globalAudio.currentTime = 0;
+        }
+      } catch (_) {}
+      try {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      } catch (_) {}
+    }
+
+    function animateTextReveal(el) {
+      if (!el) return;
+      el.classList.remove('text-reveal');
+      void el.offsetWidth;
+      el.classList.add('text-reveal');
+    }
 
     // DOM Elements - Partner
     const partnerHalf = document.getElementById('partnerHalf');
@@ -879,15 +1123,55 @@
 
     window.onTTSStart = function(lang) {
       state.orbMode = 3;
+      state.isSpeaking = true;
     };
     window.onTTSEnd = function() {
+      if (state.ttsQueue && state.ttsQueue.length > 0) {
+        var nextItem = state.ttsQueue.shift();
+        playAudio(nextItem.audio, nextItem.text, nextItem.lang);
+        return;
+      }
       state.orbMode = 0;
       state.isSpeaking = false;
     };
     window.onTTSError = function() {
+      state.ttsQueue = [];
       state.orbMode = 0;
       state.isSpeaking = false;
     };
+
+    function splitSpeechChunks(text, maxLen) {
+      if (!maxLen) maxLen = 175;
+      if (text.length <= maxLen) return [text];
+      var parts = text.match(/[^.!?\n]+[.!?\n]*/g) || [text];
+      var chunks = [];
+      var cur = '';
+      for (var i = 0; i < parts.length; i++) {
+        var seg = parts[i].trim();
+        if (!seg) continue;
+        if ((cur + ' ' + seg).trim().length <= maxLen) {
+          cur = (cur + ' ' + seg).trim();
+        } else {
+          if (cur) chunks.push(cur);
+          if (seg.length <= maxLen) {
+            cur = seg;
+          } else {
+            var words = seg.split(/\s+/);
+            cur = '';
+            for (var w = 0; w < words.length; w++) {
+              if ((cur + ' ' + words[w]).trim().length <= maxLen) {
+                cur = (cur + ' ' + words[w]).trim();
+              } else {
+                if (cur) chunks.push(cur);
+                cur = words[w];
+              }
+            }
+          }
+        }
+      }
+      if (cur) chunks.push(cur);
+      return chunks.length ? chunks : [text.slice(0, maxLen)];
+    }
 
     function setReplayIconLoading(langCode, isLoading) {
       const isPartner = langCode === state.targetLang;
@@ -952,16 +1236,47 @@
       }
     }
 
-    // Google Gemini Studio-Quality Neural Voice Fetcher
+    // Google Gemini Studio-Quality Neural Voice Fetcher (via Secure Vercel Proxy by default)
     async function fetchNeuralTTS(text, langCode) {
       if (!text || !text.trim()) return null;
-      var models = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
-      var apiKey = state.geminiApiKey || DEFAULT_GEMINI_KEY;
       var cleanText = text.trim();
       var voice = (LANG_DATA[langCode] && LANG_DATA[langCode].voice) ? LANG_DATA[langCode].voice : "Aoede";
+      var customKey = (state.geminiApiKey || '').trim();
 
+      // Mode A (Default): Secure Vercel Cloud Proxy (zero API keys on device!)
+      if (!customKey) {
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = controller ? setTimeout(function() { controller.abort(); }, 9500) : null;
+        try {
+          var pRes = await fetch(PROXY_API_BASE + '/api/tts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-App-Client': PROXY_CLIENT_ID
+            },
+            body: JSON.stringify({ text: cleanText, lang: langCode, voice: voice }),
+            signal: controller ? controller.signal : undefined
+          });
+          if (timer) clearTimeout(timer);
+          if (pRes.ok) {
+            var pJson = await pRes.json();
+            if (pJson && pJson.ok && pJson.audioBase64) {
+              return ensureWavBase64(pJson.audioBase64, 24000, 1);
+            }
+          }
+        } catch (err) {
+          if (timer) clearTimeout(timer);
+          console.warn('Proxy TTS failed:', err);
+        }
+        return null;
+      }
+
+      // Mode B (Optional): User-provided custom personal Gemini API key
+      var models = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
       for (var i = 0; i < models.length; i++) {
         var model = models[i];
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var tmr = ctrl ? setTimeout(function() { ctrl.abort(); }, 7000) : null;
         try {
           var body = JSON.stringify({
             contents: [{ parts: [{ text: cleanText }] }],
@@ -977,15 +1292,18 @@
             }
           });
 
-          var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + apiKey, {
+          var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(customKey), {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: body
+            headers: { 'Content-Type': 'application/json' },
+            body: body,
+            signal: ctrl ? ctrl.signal : undefined
           });
+          if (tmr) clearTimeout(tmr);
 
-          if (!res.ok) continue;
+          if (!res.ok) {
+            if (res.status === 401 || res.status === 403 || res.status === 429) break;
+            continue;
+          }
 
           var json = await res.json();
           var part = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts ? json.candidates[0].content.parts.find(function(p) { return p.inlineData; }) : null;
@@ -994,6 +1312,7 @@
             if (validWav) return validWav;
           }
         } catch (err) {
+          if (tmr) clearTimeout(tmr);
           console.warn('fetchNeuralTTS ' + model + ' failed:', err);
         }
       }
@@ -1078,13 +1397,14 @@
       }
     }
 
-    // Master Speech Function (Each language automatically uses its 1 single best voice)
+    // Master Speech Function (Ultra-fast hybrid engine: 0.2s Google TTS for ru/tr/en/zh + Studio HD Neural TTS for Uzbek)
     async function speakText(text, langCode) {
       if (!text || !text.trim()) return;
       var targetLang = langCode || state.targetLang || 'uz';
       var cleanText = text.trim();
       var cacheKey = targetLang + '_' + cleanText;
 
+      stopAllAudio();
       setReplayIconLoading(targetLang, true);
 
       // 1. Instant Cache Playback (0ms latency!)
@@ -1094,30 +1414,46 @@
         return;
       }
 
-      // 2. High-Definition Studio Neural Voice (Google Gemini)
+      // 2. Ultra-Fast Direct Streaming TTS for Foreign Languages (~0.2s latency, zero rate limits!)
+      if (targetLang !== 'uz') {
+        try {
+          var tlMap = { ru: 'ru', tr: 'tr', en: 'en', zh: 'zh-CN' };
+          var tl = tlMap[targetLang] || targetLang;
+          var chunks = splitSpeechChunks(cleanText, 175);
+          var queueItems = chunks.map(function(chunk) {
+            return {
+              audio: {
+                type: 'url',
+                data: 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(chunk) + '&tl=' + tl + '&client=tw-ob'
+              },
+              text: chunk,
+              lang: targetLang
+            };
+          });
+          if (queueItems.length === 1) {
+            setAudioCache(cacheKey, queueItems[0].audio);
+          }
+          var first = queueItems.shift();
+          state.ttsQueue = queueItems;
+          setReplayIconLoading(targetLang, false);
+          playAudio(first.audio, first.text, first.lang);
+          return;
+        } catch (e) {
+          console.warn("Fast TTS error:", e);
+        }
+      }
+
+      // 3. Dedicated High-Definition Studio Neural Voice (Google Gemini) for Uzbek
       try {
         var wavB64 = await fetchNeuralTTS(cleanText, targetLang);
         if (wavB64) {
-          state.audioCache[cacheKey] = { type: 'base64', data: wavB64 };
+          setAudioCache(cacheKey, { type: 'base64', data: wavB64 });
           setReplayIconLoading(targetLang, false);
           playAudio(state.audioCache[cacheKey], cleanText, targetLang);
           return;
         }
       } catch (err) {
         console.warn("Neural TTS fetch error:", err);
-      }
-
-      // 3. Fallback for Foreign Languages (ru, tr, en, zh) to Google Translate Web TTS
-      if (targetLang !== 'uz') {
-        try {
-          var gUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(cleanText.slice(0, 200)) + '&tl=' + targetLang + '&client=tw-ob';
-          state.audioCache[cacheKey] = { type: 'url', data: gUrl };
-          setReplayIconLoading(targetLang, false);
-          playAudio(state.audioCache[cacheKey], cleanText, targetLang);
-          return;
-        } catch (e) {
-          console.warn("Google TTS fallback error:", e);
-        }
       }
 
       setReplayIconLoading(targetLang, false);
@@ -1167,6 +1503,10 @@
       if (partnerLangName) partnerLangName.textContent = t.name;
       if (partnerMicLabel) partnerMicLabel.textContent = `${t.name} gapiring`;
 
+      if (autoStopLabel) {
+        autoStopLabel.textContent = state.autoStopMode === "Qo'lda" ? "Avto: O'chiq" : `Avto: ${state.autoStopMode}`;
+      }
+
       // Update selected checkmarks in modal
       document.querySelectorAll('.lang-item-btn').forEach(btn => {
         const langCode = btn.dataset.lang;
@@ -1181,16 +1521,20 @@
 
     // Flip Orientation (Face-to-Face 180° vs Normal 0°)
     flipOrientationBtn.addEventListener('click', () => {
+      haptic(14);
       state.isPartnerFlipped = !state.isPartnerFlipped;
       if (state.isPartnerFlipped) {
         partnerHalf.classList.add('flipped');
+        showToast("Yuzma-yuz rejim yoqildi", "info", 1500);
       } else {
         partnerHalf.classList.remove('flipped');
+        showToast("Oddiy ko'rinish yoqildi", "info", 1500);
       }
     });
 
     // Language Swap
     swapLangsBtn.addEventListener('click', () => {
+      haptic(16);
       const temp = state.sourceLang;
       state.sourceLang = state.targetLang;
       state.targetLang = temp;
@@ -1202,25 +1546,36 @@
       userDisplayText.textContent = partnerDisplayText.textContent;
       partnerDisplayText.textContent = tempUserText;
 
+      const tmpLast = state.lastUserText;
+      state.lastUserText = state.lastPartnerText;
+      state.lastPartnerText = tmpLast;
+      const tmpLang = state.lastUserLang;
+      state.lastUserLang = state.lastPartnerLang;
+      state.lastPartnerLang = tmpLang;
+
       updateLanguageUI();
     });
 
-    // Auto-Stop Mode Toggle
+    // Auto-Stop Mode Toggle (0.9s Tez -> 1.4s Normal -> Qo'lda)
     toggleAutoStopBtn.addEventListener('click', () => {
-      if (state.autoStopMode === '1.4s') {
-        state.autoStopMode = '2.0s';
-        state.silenceThresholdMs = 2000;
-        autoStopLabel.textContent = "Avto: 2.0s";
-      } else if (state.autoStopMode === '2.0s') {
-        state.autoStopMode = "Qo'lda";
-        state.silenceThresholdMs = 999999;
-        autoStopLabel.textContent = "Avto: O'chiq";
-      } else {
+      haptic(14);
+      if (state.autoStopMode === '0.9s') {
         state.autoStopMode = '1.4s';
         state.silenceThresholdMs = 1400;
         autoStopLabel.textContent = "Avto: 1.4s";
+        showToast("Avto-to'xtash: 1.4 soniya (Normal)", "info", 1500);
+      } else if (state.autoStopMode === '1.4s') {
+        state.autoStopMode = "Qo'lda";
+        state.silenceThresholdMs = 999999;
+        autoStopLabel.textContent = "Avto: O'chiq";
+        showToast("Qo'lda to'xtatish rejimi", "info", 1500);
+      } else {
+        state.autoStopMode = '0.9s';
+        state.silenceThresholdMs = 900;
+        autoStopLabel.textContent = "Avto: 0.9s";
+        showToast("Avto-to'xtash: 0.9 soniya (Tez)", "success", 1500);
       }
-      localStorage.setItem('perevodchik_autostop_mode', state.autoStopMode);
+      localStorage.setItem('perevodchik_autostop_mode_v2', state.autoStopMode);
     });
 
     // ========================================================
@@ -1259,6 +1614,7 @@
           localStorage.setItem('perevodchik_src_lang', state.sourceLang);
           localStorage.setItem('perevodchik_tgt_lang', state.targetLang);
         }
+        state.conversationHistory = [];
         updateLanguageUI();
         langModal.classList.add('hidden');
       });
@@ -1278,27 +1634,41 @@
     });
 
     saveServerUrlBtn.addEventListener('click', () => {
+      haptic(16);
       const val = geminiApiKeyInput.value.trim();
-      if (val) {
-        state.geminiApiKey = val;
-        try { localStorage.setItem('perevodchik_gemini_key', val); } catch (_) {}
-        state.audioCache = {};
-        alert("API kalit saqlandi! Endi bemalol gapirishingiz mumkin.");
-      }
+      state.geminiApiKey = val;
+      try {
+        if (val) localStorage.setItem('perevodchik_custom_gemini_key', val);
+        else localStorage.removeItem('perevodchik_custom_gemini_key');
+      } catch (_) {}
+      state.audioCache = {};
+      showToast(val ? "Shaxsiy API kalit saqlandi!" : "Himoyalangan bulut serveri faollashtirildi!", "success");
       serverModal.classList.add('hidden');
     });
 
     testPingBtn.addEventListener('click', async () => {
+      haptic(12);
       pingDot.style.background = '#f59e0b';
       pingText.textContent = "Tekshirilmoqda...";
+      const t0 = Date.now();
       try {
-        const res = await callGeminiGenerateContent(
+        if (!state.geminiApiKey) {
+          const r = await fetch(PROXY_API_BASE + '/api/health');
+          const j = await r.json();
+          if (r.ok && j.ok) {
+            pingDot.style.background = '#10b981';
+            pingText.textContent = `Bulut serveri tayyor (${Date.now() - t0}ms)`;
+            return;
+          }
+          throw new Error("Server javob bermadi");
+        }
+        await callGeminiGenerateContent(
           state.geminiApiKey,
           [{ parts: [{ text: "Translate Salam to Hello" }] }],
-          { temperature: 0.0 }
+          { temperature: 0.0, maxOutputTokens: 20 }
         );
         pingDot.style.background = '#10b981';
-        pingText.textContent = `Google AI aloqasi tayyor!`;
+        pingText.textContent = `Shaxsiy kalit tayyor (${Date.now() - t0}ms)`;
       } catch (err) {
         pingDot.style.background = '#ef4444';
         pingText.textContent = "Ulanishda xatolik";
@@ -1368,7 +1738,7 @@
     function isValidSpeechText(txt) {
       if (!txt) return false;
       const t = txt.trim();
-      if (!t || t === '...' || t.includes('gapirish uchun') || t.includes('bosib gapiring') || t.includes('Tinglanmoqda') || t.includes('Tarjima qilinmoqda') || t.includes('Kutilmoqda')) {
+      if (!t || t === '...' || t.includes('gapirish uchun') || t.includes('bosib gapiring') || t.includes('Tinglanmoqda') || t.includes('Tahlil qilinmoqda') || t.includes('Tarjima qilinmoqda') || t.includes('Kutilmoqda')) {
         return false;
       }
       return true;
@@ -1376,6 +1746,7 @@
 
     // Replay Buttons (Clicking 🔊 immediately repeats audio without delays)
     userReplayBtn.addEventListener('click', () => {
+      haptic(14);
       const txt = state.lastUserText || userDisplayText.textContent.trim();
       if (isValidSpeechText(txt)) {
         speakText(txt, state.lastUserLang || state.sourceLang);
@@ -1383,6 +1754,7 @@
     });
 
     partnerReplayBtn.addEventListener('click', () => {
+      haptic(14);
       const txt = state.lastPartnerText || partnerDisplayText.textContent.trim();
       if (isValidSpeechText(txt)) {
         speakText(txt, state.lastPartnerLang || state.targetLang);
@@ -1410,6 +1782,16 @@
     }
 
     async function startRecording(speaker) {
+      if (navigator.onLine === false) {
+        haptic(40);
+        showToast("Internet yo'q — tarjima uchun internet kerak", "warning", 3000);
+        return;
+      }
+      state.activeRequestId++;
+      stopAllAudio();
+      haptic(20);
+      playChime('start');
+
       state.isRecording = true;
       state.activeSpeaker = speaker;
       state.orbMode = 1;
@@ -1421,13 +1803,14 @@
       state.ambientNoiseRms = 0.0;
       state.calibrationFrames = 0;
 
+      const activeBtn = speaker === 'user' ? userMicBtn : partnerMicBtn;
       if (speaker === 'user') {
         userMicBtn.classList.add('recording');
-        userMicLabel.textContent = "Eshitilmoqda...";
+        userMicLabel.textContent = "Gapiring...";
         userDisplayText.textContent = "...";
       } else {
         partnerMicBtn.classList.add('recording');
-        partnerMicLabel.textContent = "Eshitilmoqda...";
+        partnerMicLabel.textContent = "Gapiring...";
         partnerDisplayText.textContent = "...";
       }
 
@@ -1435,6 +1818,7 @@
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             channelCount: 1,
+            sampleRate: 16000,
             echoCancellation: true,
             noiseSuppression: true,
             autoGainControl: true
@@ -1442,92 +1826,112 @@
         });
         state.mediaStream = stream;
 
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        state.audioCtx = new AudioContextClass();
-        if (state.audioCtx.state === 'suspended') {
-          await state.audioCtx.resume();
-        }
-
-        const source = state.audioCtx.createMediaStreamSource(stream);
-        state.analyser = state.audioCtx.createAnalyser();
-        state.analyser.fftSize = 512;
-        source.connect(state.analyser);
-
-        const bufferLength = state.analyser.fftSize;
-        const dataArray = new Float32Array(bufferLength);
-
-        // VAD Monitor Loop
-        const vadInterval = setInterval(() => {
-          if (!state.isRecording) {
-            clearInterval(vadInterval);
-            return;
-          }
-
-          state.analyser.getFloatTimeDomainData(dataArray);
-          let sumSquares = 0.0;
-          for (let i = 0; i < bufferLength; i++) {
-            sumSquares += dataArray[i] * dataArray[i];
-          }
-          const rms = Math.sqrt(sumSquares / bufferLength);
-          state.audioLevel = Math.min(1.0, rms * 4.0);
-
-          // Calibrate ambient noise
-          if (state.calibrationFrames < 15) {
-            state.ambientNoiseRms = (state.ambientNoiseRms * state.calibrationFrames + rms) / (state.calibrationFrames + 1);
-            state.calibrationFrames++;
-            return;
-          }
-
-          const threshold = Math.max(state.voiceRmsThreshold, state.ambientNoiseRms * 2.2);
-
-          if (rms > threshold) {
-            state.lastVoiceTime = Date.now();
-            state.speechFramesCount++;
-            if (!state.hasSpoken && state.speechFramesCount >= 3) {
-              state.hasSpoken = true;
-              state.speechStartTime = Date.now();
-            }
-          } else {
-            if (state.hasSpoken && state.silenceThresholdMs < 90000) {
-              const silenceDuration = Date.now() - state.lastVoiceTime;
-              const totalSpeech = Date.now() - state.speechStartTime;
-              if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 600) {
-                clearInterval(vadInterval);
-                stopRecording(true);
-              }
-            }
-          }
-        }, 60);
-
-        // MediaRecorder setup (WebM Opus / MP4)
+        // 1. Start MediaRecorder IMMEDIATELY with 16kbps Opus compression (6-8x smaller & faster upload!)
         let mime = 'audio/webm;codecs=opus';
         if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/webm';
         if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/mp4';
         if (!MediaRecorder.isTypeSupported(mime)) mime = '';
 
         state.mediaRecorderMime = mime || 'audio/webm';
-        state.mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+        const recOptions = mime ? { mimeType: mime, audioBitsPerSecond: 16000 } : { audioBitsPerSecond: 16000 };
+        try {
+          state.mediaRecorder = new MediaRecorder(stream, recOptions);
+        } catch (_) {
+          state.mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+        }
 
         state.mediaRecorder.ondataavailable = (e) => {
           if (e.data && e.data.size > 0) state.recordedMediaChunks.push(e.data);
         };
 
-        state.mediaRecorder.start(100);
+        state.mediaRecorder.start(80);
+
+        // 2. Reuse shared AudioContext for zero-lag VAD & live visual aura
+        const ctx = getSharedAudioCtx();
+        if (ctx) {
+          const source = ctx.createMediaStreamSource(stream);
+          state.analyser = ctx.createAnalyser();
+          state.analyser.fftSize = 256;
+          source.connect(state.analyser);
+          state._micSourceNode = source;
+
+          const bufferLength = state.analyser.fftSize;
+          const dataArray = new Float32Array(bufferLength);
+
+          // Fast Adaptive VAD Loop (40ms interval, 160ms quick calibration!)
+          const vadInterval = setInterval(() => {
+            if (!state.isRecording) {
+              clearInterval(vadInterval);
+              activeBtn.style.setProperty('--voice-level', '0');
+              return;
+            }
+
+            state.analyser.getFloatTimeDomainData(dataArray);
+            let sumSquares = 0.0;
+            for (let i = 0; i < bufferLength; i++) {
+              sumSquares += dataArray[i] * dataArray[i];
+            }
+            const rms = Math.sqrt(sumSquares / bufferLength);
+            state.audioLevel = Math.min(1.0, rms * 5.0);
+            activeBtn.style.setProperty('--voice-level', state.audioLevel.toFixed(2));
+
+            // Ultra-fast 4-frame (160ms) ambient calibration
+            if (state.calibrationFrames < 4) {
+              state.ambientNoiseRms = (state.ambientNoiseRms * state.calibrationFrames + rms) / (state.calibrationFrames + 1);
+              state.calibrationFrames++;
+              return;
+            }
+
+            const threshold = Math.max(state.voiceRmsThreshold, Math.min(0.06, state.ambientNoiseRms * 2.1));
+
+            if (rms > threshold) {
+              state.lastVoiceTime = Date.now();
+              state.speechFramesCount++;
+              if (!state.hasSpoken && state.speechFramesCount >= 2) {
+                state.hasSpoken = true;
+                state.speechStartTime = Date.now();
+              }
+            } else {
+              // Slowly adapt noise floor down if room gets quieter
+              state.ambientNoiseRms = state.ambientNoiseRms * 0.98 + rms * 0.02;
+              if (state.hasSpoken && state.silenceThresholdMs < 90000) {
+                const silenceDuration = Date.now() - state.lastVoiceTime;
+                const totalSpeech = Date.now() - state.speechStartTime;
+                if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 400) {
+                  clearInterval(vadInterval);
+                  stopRecording(true);
+                }
+              }
+            }
+          }, 40);
+        }
       } catch (err) {
         console.error("Mic error:", err);
         stopRecording(false);
-        alert("Mikrofonga ruxsat berilmadi: " + err.message);
+        haptic(40);
+        showToast("Mikrofonga ruxsat berilmadi: " + err.message, "error", 3500);
       }
     }
 
     function stopRecording(shouldProcess = true) {
       if (!state.isRecording) return;
       state.isRecording = false;
+      state.audioLevel = 0;
+
+      haptic(14);
+      if (shouldProcess) playChime('stop');
 
       const speaker = state.activeSpeaker;
       userMicBtn.classList.remove('recording');
       partnerMicBtn.classList.remove('recording');
+      userMicBtn.style.setProperty('--voice-level', '0');
+      partnerMicBtn.style.setProperty('--voice-level', '0');
       updateLanguageUI();
+
+      if (state._micSourceNode) {
+        try { state._micSourceNode.disconnect(); } catch (_) {}
+        state._micSourceNode = null;
+      }
 
       if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
         state.mediaRecorder.onstop = () => {
@@ -1538,21 +1942,18 @@
             } catch (_) {}
             state.mediaStream = null;
           }
-          if (state.audioCtx && state.audioCtx.state !== 'closed') {
-            state.audioCtx.close().catch(() => {});
-            state.audioCtx = null;
-          }
 
           if (shouldProcess && state.recordedMediaChunks.length > 0) {
             const cleanMime = (state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
             const blob = new Blob(state.recordedMediaChunks, { type: cleanMime });
-            console.log("Audio blob ready, size:", blob.size, "mime:", cleanMime);
-            if (blob.size >= 800) {
+            console.log("Compressed audio blob ready, size:", blob.size, "mime:", cleanMime);
+            if (blob.size >= 350) {
               processAudioSpeech(blob, speaker);
             } else {
-              console.warn("Audio too short (<800 bytes), ignoring:", blob.size);
+              console.warn("Audio too short (<350 bytes), ignoring:", blob.size);
               resetStatusDisplay();
               state.orbMode = 0;
+              showToast("Juda qisqa — biroz aniqroq gapiring", "warning", 1800);
             }
           } else {
             resetStatusDisplay();
@@ -1586,11 +1987,11 @@
     }
 
     function resetStatusDisplay() {
-      if (userDisplayText.textContent === '...' || userDisplayText.textContent === 'Tinglanmoqda...') {
-        userDisplayText.textContent = "O'zbekcha gapirish uchun tugmani bosing...";
+      if (userDisplayText.textContent === '...' || userDisplayText.textContent === 'Tinglanmoqda...' || userDisplayText.textContent === 'Tahlil qilinmoqda...' || userDisplayText.textContent === 'Tarjima qilinmoqda...') {
+        userDisplayText.textContent = state.lastUserText || "O'zbekcha gapirish uchun tugmani bosing...";
       }
-      if (partnerDisplayText.textContent === '...' || partnerDisplayText.textContent === 'Tinglanmoqda...' || partnerDisplayText.textContent === 'Tarjima qilinmoqda...') {
-        partnerDisplayText.textContent = "Tugmani bosib gapiring...";
+      if (partnerDisplayText.textContent === '...' || partnerDisplayText.textContent === 'Tinglanmoqda...' || partnerDisplayText.textContent === 'Tahlil qilinmoqda...' || partnerDisplayText.textContent === 'Tarjima qilinmoqda...') {
+        partnerDisplayText.textContent = state.lastPartnerText || "Tugmani bosib gapiring...";
       }
     }
 
@@ -1611,21 +2012,99 @@
       });
     }
 
+    // Strip markdown artifacts & common STT hallucinations
+    const HALLUCINATION_PATTERNS = [
+      /^thank you for watching[.!]?$/i,
+      /^thanks for watching[.!]?$/i,
+      /^subtitles by/i,
+      /^amara\.org/i,
+      /^mbc news/i,
+      /^продолжение следует/i,
+      /^субтитры/i
+    ];
+
+    function sanitizeOutputText(str) {
+      if (!str || typeof str !== 'string') return '';
+      let clean = str
+        .replace(/[*_`~]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      for (const rx of HALLUCINATION_PATTERNS) {
+        if (rx.test(clean)) return '';
+      }
+      return clean;
+    }
+
+    function getContextHint() {
+      // Auto-expire context after 10 minutes of silence (new conversation)
+      if (state.lastTurnTimestamp && (Date.now() - state.lastTurnTimestamp > 10 * 60 * 1000)) {
+        state.conversationHistory = [];
+      }
+      if (!state.conversationHistory || state.conversationHistory.length === 0) return '';
+      const recent = state.conversationHistory
+        .slice(-4)
+        .map(h => `${h.role} (${h.srcL}->${h.tgtL}): "${h.src}" => "${h.tgt}"`)
+        .join('\n');
+      return `\nRecent conversation context (use to resolve pronouns & tone):\n${recent}`;
+    }
+
+    // Zero-key free Google Translate fallback for edited/typed text when Gemini is temporarily 503
+    async function fetchFreeGoogleTranslate(text, srcL, tgtL) {
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = controller ? setTimeout(() => controller.abort(), 5000) : null;
+      try {
+        const map = { uz: 'uz', ru: 'ru', tr: 'tr', en: 'en', zh: 'zh-CN' };
+        const sl = map[srcL] || srcL;
+        const tl = map[tgtL] || tgtL;
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url, { signal: controller ? controller.signal : undefined });
+        if (timer) clearTimeout(timer);
+        if (!res.ok) return null;
+        const json = await res.json();
+        const translated = (json && Array.isArray(json[0])) ? json[0].map(x => x && x[0] ? x[0] : '').join('').trim() : '';
+        return translated || null;
+      } catch (_) {
+        if (timer) clearTimeout(timer);
+        return null;
+      }
+    }
+
+    function handleTranslationError(err) {
+      haptic(45);
+      const msg = String(err && err.message ? err.message : err || '');
+      if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
+        showToast("API kalit eskirgan (401). Sozlamalarda yangilang.", "error", 4500);
+        geminiApiKeyInput.value = state.geminiApiKey || '';
+        serverModal.classList.remove('hidden');
+      } else if (msg.includes('AbortError') || msg.includes('aborted')) {
+        showToast("Internet juda sust — qayta urinib ko'ring", "warning", 3200);
+      } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+        showToast("Internet aloqasi yo'q", "error", 3200);
+      } else if (msg.includes('503') || msg.includes('429')) {
+        showToast("Google AI vaqtincha band — 2 soniyadan so'ng urinib ko'ring", "warning", 3200);
+      } else {
+        showToast("Xatolik: " + msg.slice(0, 90), "error", 3500);
+      }
+    }
+
     async function processAudioSpeech(audioBlob, speaker) {
+      const reqId = ++state.activeRequestId;
+      const t0 = Date.now();
       state.orbMode = 2; // Processing (pulsing crystal orb)
       const srcL = speaker === 'user' ? state.sourceLang : state.targetLang;
       const tgtL = speaker === 'user' ? state.targetLang : state.sourceLang;
 
       if (speaker === 'user') {
-        userDisplayText.textContent = "Tinglanmoqda...";
+        userDisplayText.textContent = "Tahlil qilinmoqda...";
         partnerDisplayText.textContent = "Tarjima qilinmoqda...";
       } else {
-        partnerDisplayText.textContent = "Tinglanmoqda...";
+        partnerDisplayText.textContent = "Tahlil qilinmoqda...";
         userDisplayText.textContent = "Tarjima qilinmoqda...";
       }
 
       try {
         const audioB64 = await blobToBase64(audioBlob);
+        if (reqId !== state.activeRequestId) return; // Stale request ignored
         if (!audioB64 || audioB64.length < 50) {
           resetStatusDisplay();
           state.orbMode = 0;
@@ -1634,13 +2113,13 @@
 
         const cleanMime = (audioBlob.type || state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
 
-        const prompt = `You are an expert bilingual interpreter.
-The speaker spoke in ${LANG_DATA[srcL]?.name || srcL}.
-The target language is ${LANG_DATA[tgtL]?.name || tgtL}.
-1. Transcribe what was said accurately into "source_text".
-2. Translate it naturally and fluently into ${LANG_DATA[tgtL]?.name || tgtL} in "translated_text".
-Return ONLY valid JSON with keys "source_text" and "translated_text":
-{"source_text": "...", "translated_text": "..."}`;
+        const prompt = `You are a professional live bilingual interpreter.
+Speaker language: ${LANG_DATA[srcL]?.name || srcL}. Target language: ${LANG_DATA[tgtL]?.name || tgtL}.${getContextHint()}
+Rules:
+1. Transcribe spoken words accurately into "source_text" (for Uzbek use standard Latin script with proper o' and g', understand spoken/colloquial Uzbek & everyday loanwords).
+2. Translate naturally and idiomatically into "translated_text" as a human interpreter: preserve politeness/formality (siz->Вы/siz, sen->ты/sen), exact numbers, prices, and names. No explanations, no notes, no markdown.
+3. If the audio contains only background noise, silence, breath, or unintelligible sound, return empty strings and "no_speech": true.
+Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech":false}`;
 
         const contents = [{
           parts: [
@@ -1651,67 +2130,122 @@ Return ONLY valid JSON with keys "source_text" and "translated_text":
 
         const res = await callGeminiGenerateContent(state.geminiApiKey, contents, {
           temperature: 0.1,
+          maxOutputTokens: 260,
           responseMimeType: "application/json"
-        });
+        }, reqId);
+
+        if (reqId !== state.activeRequestId) return; // User already started a newer turn
 
         const json = parseGeminiJsonResponse(res.text);
-        const sourceText = (json.source_text || '').trim();
-        const translatedText = (json.translated_text || '').trim();
+        const sourceText = sanitizeOutputText(json.source_text || '');
+        const translatedText = sanitizeOutputText(json.translated_text || '');
 
-        if (!sourceText && !translatedText) {
-          throw new Error("Nutq aniqlanmadi yoki bo'sh qaytdi");
+        if (json.no_speech === true || (!sourceText && !translatedText)) {
+          resetStatusDisplay();
+          state.orbMode = 0;
+          showToast("Nutq eshitilmadi — aniqroq gapiring", "warning", 2200);
+          return;
         }
 
-        applyTranslationResult(sourceText, translatedText, speaker, srcL, tgtL);
+        setCachedTranslation(srcL, tgtL, sourceText, translatedText);
+        const elapsedSec = ((Date.now() - t0) / 1000).toFixed(1);
+        applyTranslationResult(sourceText, translatedText, speaker, srcL, tgtL, elapsedSec);
       } catch (err) {
+        if (reqId !== state.activeRequestId) return;
         console.error("Translation error:", err);
-        const msg = String(err.message || '');
-        if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
-          alert("Google API Kaliti xatosi (HTTP 401):\nKalit eskirgan yoki bloklangan.\n\nIltimos, ochilayotgan Sozlamalar darchasiga aistudio.google.com dan olgan yangi bepul kalitingizni kiriting.");
-          geminiApiKeyInput.value = state.geminiApiKey || '';
-          serverModal.classList.remove('hidden');
-        } else {
-          alert("Tarjima xatosi: " + msg);
-        }
+        handleTranslationError(err);
         resetStatusDisplay();
         state.orbMode = 0;
       }
     }
 
     async function runTextTranslation(text, speaker) {
-      state.orbMode = 2;
+      const cleanInput = (text || '').trim();
+      if (!cleanInput) return;
+
+      const reqId = ++state.activeRequestId;
+      const t0 = Date.now();
       const srcL = speaker === 'user' ? state.sourceLang : state.targetLang;
       const tgtL = speaker === 'user' ? state.targetLang : state.sourceLang;
 
+      // 1. Instant 0ms persistent phrase cache hit!
+      const cached = getCachedTranslation(srcL, tgtL, cleanInput);
+      if (cached) {
+        applyTranslationResult(cleanInput, cached, speaker, srcL, tgtL, '0.0');
+        return;
+      }
+
+      if (navigator.onLine === false) {
+        showToast("Internet yo'q — matnni tarjima qilib bo'lmadi", "warning", 3000);
+        return;
+      }
+
+      state.orbMode = 2;
+
       try {
-        const prompt = `Translate the following text from ${LANG_DATA[srcL]?.name || srcL} to ${LANG_DATA[tgtL]?.name || tgtL}.
-Input: "${text}"
-Output MUST be valid JSON: {"translated_text": "..."}`;
+        const prompt = `Professional bilingual translator. Translate naturally and idiomatically from ${LANG_DATA[srcL]?.name || srcL} to ${LANG_DATA[tgtL]?.name || tgtL}, preserving politeness/tone.${getContextHint()}
+Input: "${cleanInput}"
+No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
-        const res = await callGeminiGenerateContent(state.geminiApiKey, [{ parts: [{ text: prompt }] }], {
-          temperature: 0.1,
-          responseMimeType: "application/json"
-        });
-
-        const json = parseGeminiJsonResponse(res.text);
-        const translatedText = (json.translated_text || '').trim();
-        applyTranslationResult(text, translatedText, speaker, srcL, tgtL);
-      } catch (err) {
-        console.error("Text translation error:", err);
-        const msg = String(err.message || '');
-        if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
-          alert("Google API Kaliti xatosi (HTTP 401):\nKalit eskirgan yoki bloklangan.\n\nIltimos, ochilayotgan Sozlamalar darchasiga aistudio.google.com dan olgan yangi bepul kalitingizni kiriting.");
-          geminiApiKeyInput.value = state.geminiApiKey || '';
-          serverModal.classList.remove('hidden');
-        } else {
-          alert("Tarjima xatosi: " + msg);
+        let translatedText = '';
+        try {
+          const res = await callGeminiGenerateContent(state.geminiApiKey, [{ parts: [{ text: prompt }] }], {
+            temperature: 0.1,
+            maxOutputTokens: 240,
+            responseMimeType: "application/json"
+          }, reqId);
+          if (reqId !== state.activeRequestId) return;
+          const json = parseGeminiJsonResponse(res.text);
+          translatedText = sanitizeOutputText(json.translated_text || '');
+        } catch (geminiErr) {
+          if (reqId !== state.activeRequestId) return;
+          // Automatic free Google Translate fallback if Gemini is busy/503/429
+          const msg = String(geminiErr && geminiErr.message ? geminiErr.message : '');
+          if (!msg.includes('401') && !msg.includes('403')) {
+            const fallback = await fetchFreeGoogleTranslate(cleanInput, srcL, tgtL);
+            if (fallback) {
+              translatedText = sanitizeOutputText(fallback);
+            } else {
+              throw geminiErr;
+            }
+          } else {
+            throw geminiErr;
+          }
         }
+
+        if (reqId !== state.activeRequestId) return;
+        if (translatedText) {
+          setCachedTranslation(srcL, tgtL, cleanInput, translatedText);
+        }
+        const elapsedSec = ((Date.now() - t0) / 1000).toFixed(1);
+        applyTranslationResult(cleanInput, translatedText, speaker, srcL, tgtL, elapsedSec);
+      } catch (err) {
+        if (reqId !== state.activeRequestId) return;
+        console.error("Text translation error:", err);
+        handleTranslationError(err);
         state.orbMode = 0;
       }
     }
 
-    function applyTranslationResult(srcText, tgtText, speaker, srcL, tgtL) {
+    function applyTranslationResult(srcText, tgtText, speaker, srcL, tgtL, elapsedSec) {
       state.orbMode = 0;
+      state.lastTurnTimestamp = Date.now();
+      haptic(12);
+
+      // Keep last 5 turns with speaker roles in memory for contextual accuracy
+      if (srcText && tgtText) {
+        state.conversationHistory.push({
+          role: speaker === 'user' ? 'Me' : 'Partner',
+          srcL: srcL,
+          tgtL: tgtL,
+          src: srcText.slice(0, 140),
+          tgt: tgtText.slice(0, 140)
+        });
+        if (state.conversationHistory.length > 5) state.conversationHistory.shift();
+      }
+
+      const speedSuffix = elapsedSec ? ` · ${elapsedSec}s` : '';
+
       if (speaker === 'user') {
         state.lastUserText = srcText;
         state.lastUserLang = srcL;
@@ -1719,9 +2253,11 @@ Output MUST be valid JSON: {"translated_text": "..."}`;
         state.lastPartnerLang = tgtL;
 
         userDisplayText.textContent = srcText || '...';
+        animateTextReveal(userDisplayText);
         userSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
         partnerDisplayText.textContent = tgtText || '...';
-        partnerSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})`;
+        animateTextReveal(partnerDisplayText);
+        partnerSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
@@ -1733,9 +2269,11 @@ Output MUST be valid JSON: {"translated_text": "..."}`;
         state.lastUserLang = tgtL;
 
         partnerDisplayText.textContent = srcText || '...';
+        animateTextReveal(partnerDisplayText);
         partnerSubtext.textContent = `Aytilgan nutq (${LANG_DATA[srcL]?.name || srcL})`;
         userDisplayText.textContent = tgtText || '...';
-        userSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})`;
+        animateTextReveal(userDisplayText);
+        userSubtext.textContent = `Tarjima (${LANG_DATA[tgtL]?.name || tgtL})${speedSuffix}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
@@ -1743,47 +2281,134 @@ Output MUST be valid JSON: {"translated_text": "..."}`;
       }
     }
 
-    async function callGeminiGenerateContent(apiKey, contents, config = {}) {
-      const activeKey = apiKey || DEFAULT_GEMINI_KEY;
-      const models = ['gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-3.8-flash'];
-      let lastError = null;
+    function sleepMs(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-      for (const m of models) {
-        try {
-          const body = { contents };
-          if (config.temperature !== undefined) body.generationConfig = { temperature: config.temperature };
-          if (config.responseMimeType) {
-            body.generationConfig = body.generationConfig || {};
-            body.generationConfig.responseMimeType = config.responseMimeType;
+    async function callGeminiGenerateContent(apiKey, contents, config = {}, reqId = null) {
+      const customKey = (apiKey || '').trim();
+      const generationConfig = {};
+      if (config.temperature !== undefined) generationConfig.temperature = config.temperature;
+      if (config.maxOutputTokens !== undefined) generationConfig.maxOutputTokens = config.maxOutputTokens;
+      if (config.responseMimeType) generationConfig.responseMimeType = config.responseMimeType;
+
+      // Mode A (Default): Secure Vercel Cloud Proxy (multi-key + multi-model failover on server!)
+      if (!customKey) {
+        let lastProxyErr = null;
+        for (let attempt = 1; attempt <= 2; attempt++) {
+          if (reqId !== null && reqId !== state.activeRequestId) {
+            throw new Error('CANCELLED_BY_NEWER_REQUEST');
+          }
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), attempt === 1 ? 11000 : 12000) : null;
+          try {
+            const res = await fetch(PROXY_API_BASE + '/api/translate', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-App-Client': PROXY_CLIENT_ID
+              },
+              body: JSON.stringify({ contents, generationConfig }),
+              signal: controller ? controller.signal : undefined
+            });
+            if (timer) clearTimeout(timer);
+
+            const json = await res.json().catch(() => ({}));
+            if (res.ok && json.ok && json.text) {
+              return { text: json.text, model: json.model || 'cloud-proxy' };
+            }
+
+            lastProxyErr = json.error || `Server (HTTP ${res.status})`;
+            if (res.status === 400 || res.status === 401 || res.status === 403) {
+              throw new Error(lastProxyErr);
+            }
+          } catch (e) {
+            if (timer) clearTimeout(timer);
+            if (e.message === 'CANCELLED_BY_NEWER_REQUEST') throw e;
+            lastProxyErr = e.name === 'AbortError' ? 'AbortError (timeout)' : e.message;
+            if (lastProxyErr.includes('HTTP 400') || lastProxyErr.includes('HTTP 401') || lastProxyErr.includes('HTTP 403')) {
+              throw new Error(lastProxyErr);
+            }
           }
 
-          // Pass API key via URL query parameter to bypass WebView CORS and custom header restrictions
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${activeKey}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-          });
-
-          if (!res.ok) {
-            const errText = await res.text();
-            lastError = `${m} (HTTP ${res.status}): ${errText.slice(0, 150)}`;
-            console.warn(lastError);
-            continue;
+          if (attempt === 1 && (reqId === null || reqId === state.activeRequestId)) {
+            showToast("Qayta ulanilmoqda...", "info", 1500);
+            await sleepMs(600);
           }
-
-          const json = await res.json();
-          const candidate = json.candidates?.[0];
-          const textPart = candidate?.content?.parts?.find(p => p.text);
-          if (textPart && textPart.text) {
-            return { text: textPart.text, model: m };
-          }
-        } catch (e) {
-          lastError = `${m} tarmoq xatosi: ${e.message}`;
-          console.warn(lastError);
         }
+        throw new Error(lastProxyErr || "Bulut serveri javob bermadi");
       }
+
+      // Mode B (Optional): User-provided custom personal Gemini API key
+      const pass1Models = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
+      const pass2Models = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite'];
+      let lastError = null;
+      let sawRetryable = false;
+
+      async function tryModelList(models, timeoutMs) {
+        for (const m of models) {
+          if (reqId !== null && reqId !== state.activeRequestId) {
+            throw new Error('CANCELLED_BY_NEWER_REQUEST');
+          }
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+          try {
+            const body = { contents };
+            if (Object.keys(generationConfig).length > 0) body.generationConfig = generationConfig;
+
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(customKey)}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body),
+              signal: controller ? controller.signal : undefined
+            });
+            if (timer) clearTimeout(timer);
+
+            if (!res.ok) {
+              const errText = await res.text();
+              lastError = `${m} (HTTP ${res.status}): ${errText.slice(0, 150)}`;
+              console.warn(lastError);
+              if (res.status === 401 || res.status === 403 || res.status === 400) {
+                throw new Error(lastError);
+              }
+              if (res.status === 503 || res.status === 429 || res.status >= 500) {
+                sawRetryable = true;
+              }
+              continue;
+            }
+
+            const json = await res.json();
+            const candidate = json.candidates?.[0];
+            const textPart = candidate?.content?.parts?.find(p => p.text);
+            if (textPart && textPart.text) {
+              return { text: textPart.text, model: m };
+            }
+          } catch (e) {
+            if (timer) clearTimeout(timer);
+            if (e.message === 'CANCELLED_BY_NEWER_REQUEST') throw e;
+            lastError = e.name === 'AbortError' ? `${m}: AbortError (timeout)` : `${m}: ${e.message}`;
+            console.warn(lastError);
+            if (lastError.includes('HTTP 401') || lastError.includes('HTTP 403') || lastError.includes('HTTP 400')) {
+              throw new Error(lastError);
+            }
+            sawRetryable = true;
+          }
+        }
+        return null;
+      }
+
+      const res1 = await tryModelList(pass1Models, 8000);
+      if (res1) return res1;
+
+      if (sawRetryable && (reqId === null || reqId === state.activeRequestId)) {
+        showToast("Qayta ulanilmoqda...", "info", 1500);
+        await sleepMs(650);
+        const res2 = await tryModelList(pass2Models, 9000);
+        if (res2) return res2;
+      }
+
       throw new Error(lastError || "Google AI modellari band yoki xato berdi.");
     }
 

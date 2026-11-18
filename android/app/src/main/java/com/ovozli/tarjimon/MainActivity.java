@@ -243,7 +243,14 @@ public class MainActivity extends BridgeActivity {
                 }
                 mediaPlayer = new android.media.MediaPlayer();
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mediaPlayer.setDataSource(url);
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    java.util.Map<String, String> headers = new java.util.HashMap<>();
+                    headers.put("User-Agent", "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36");
+                    headers.put("Referer", "https://translate.google.com/");
+                    mediaPlayer.setDataSource(MainActivity.this, android.net.Uri.parse(url), headers);
+                } else {
+                    mediaPlayer.setDataSource(url);
+                }
                 mediaPlayer.setOnPreparedListener(mp -> {
                     mp.start();
                     notifyTTSStart();
@@ -293,9 +300,8 @@ public class MainActivity extends BridgeActivity {
                 cleanB64 = cleanB64.substring(commaIdx + 1);
             }
             byte[] bytes = android.util.Base64.decode(cleanB64, android.util.Base64.DEFAULT);
-            java.io.File tempFile = java.io.File.createTempFile("tts_audio_", ".wav", getCacheDir());
-            tempFile.deleteOnExit();
-            java.io.FileOutputStream fos = new java.io.FileOutputStream(tempFile);
+            java.io.File tempFile = new java.io.File(getCacheDir(), "tts_current.wav");
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(tempFile, false);
             fos.write(bytes);
             fos.close();
             playNativeUrl(tempFile.getAbsolutePath(), fallbackText, langCode);
@@ -344,6 +350,21 @@ public class MainActivity extends BridgeActivity {
                 return;
             }
             speakNative(text, langCode, rate, pitch);
+        }
+
+        @JavascriptInterface
+        public void vibrate(int durationMs) {
+            try {
+                int ms = Math.max(8, Math.min(120, durationMs));
+                android.os.Vibrator v = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null && v.hasVibrator()) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        v.vibrate(android.os.VibrationEffect.createOneShot(ms, android.os.VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        v.vibrate(ms);
+                    }
+                }
+            } catch (Exception ignored) {}
         }
 
         @JavascriptInterface
