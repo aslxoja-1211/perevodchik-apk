@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Ovozli Tarjimon AI</string>
-    <string name="title_activity_main">Ovozli Tarjimon AI</string>
+    <string name="app_name">HopTell</string>
+    <string name="title_activity_main">HopTell</string>
     <string name="package_name">com.ovozli.tarjimon</string>
     <string name="custom_url_scheme">com.ovozli.tarjimon</string>
 </resources>

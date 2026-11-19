@@ -1,11 +1,11 @@
 ﻿# ========================================================
-# Ovozli Tarjimon — Android APK Yig'ish Skripti (PowerShell)
+# HopTell — Android APK Yig'ish Skripti (PowerShell)
 # ========================================================
 
 $ErrorActionPreference = "Continue"
 
 Write-Host "=================================================" -ForegroundColor Cyan
-Write-Host "  Ovozli Tarjimon (Android APK Builder)          " -ForegroundColor Yellow
+Write-Host "  HopTell (Android APK Builder)                  " -ForegroundColor Yellow
 Write-Host "=================================================" -ForegroundColor Cyan
 
 # 1. Web resurslarni sinxronizatsiya qilish
@@ -57,11 +57,14 @@ if ($JavaCheck) {
 
     if ($BuildExitCode -eq 0) {
         $SourceApk = Join-Path $PSScriptRoot "android\app\build\outputs\apk\debug\app-debug.apk"
-        $TargetApk = Join-Path $PSScriptRoot "Ovozli-Tarjimon.apk"
-        
+        $TargetApk = Join-Path $PSScriptRoot "HopTell.apk"
         Copy-Item -Path $SourceApk -Destination $TargetApk -Force
         
-        Write-Host "`n[4/4] [TABRIKLAYMIZ!] APK muvaffaqiyatli tayyorlandi!" -ForegroundColor Green
+        # Orqaga moslik uchun Ovozli-Tarjimon.apk nusxasini ham saqlaymiz
+        $LegacyApk = Join-Path $PSScriptRoot "Ovozli-Tarjimon.apk"
+        Copy-Item -Path $SourceApk -Destination $LegacyApk -Force
+        
+        Write-Host "`n[4/4] [TABRIKLAYMIZ!] HopTell APK muvaffaqiyatli tayyorlandi!" -ForegroundColor Green
         Write-Host "Asosiy APK fayl: $TargetApk" -ForegroundColor Yellow
         Write-Host "Debug katalogi:  $SourceApk" -ForegroundColor Gray
     } else {

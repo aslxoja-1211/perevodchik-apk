@@ -1,6 +1,6 @@
-# Ovozli Tarjimon — Android Mobil Ilovasi (Mustaqil & Ommabop)
+# HopTell — Smart AI Voice Translator (Android)
 
-**Ovozli Tarjimon** — o'zbek tilidagi jonli nutqni bir zumda aniqlab, neyron tarmoqlar (Google Gemini AI) orqali tabiiy rus, turk, ingliz va xitoy tillariga tarjima qiluvchi hamda Android ovoz tizimida ravon gapirib beruvchi **mustaqil mobil ilova**.
+**HopTell** — jonli nutqni bir zumda aniqlab, neyron tarmoqlar (Google Gemini AI) orqali tabiiy rus, turk, ingliz, xitoy va o'zbek tillariga tarjima qiluvchi hamda Android ovoz tizimida ravon gapirib beruvchi **mustaqil mobil ilova**.
 
 ---
 
@@ -47,7 +47,7 @@
 Loyihada `.github/workflows/build-apk.yml` fayli mavjud:
 1. Loyihani GitHub-ga push qiling (`git push origin main`).
 2. GitHub sahifangizdagi **Actions** bo'limiga o'ting.
-3. 2 daqiqada tayyor bo'lgan `OvozliTarjimon-Debug-APK.zip` ni yuklab oling!
+3. 2 daqiqada tayyor bo'lgan `HopTell-Debug-APK.zip` ni yuklab oling!
 
 ---
 
