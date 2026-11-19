@@ -223,10 +223,11 @@
     }
 
     .center-floating-dock {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 440px;
       padding: 6px 14px;
       background: rgba(28, 28, 30, 0.88);
       backdrop-filter: blur(14px);
@@ -234,6 +235,29 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 999px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 18px rgba(204, 255, 0, 0.06);
+    }
+
+    .dock-left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .dock-orb-wrap {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
+    }
+
+    .dock-actions {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
     }
 
     .dock-pill-btn {
@@ -1007,31 +1031,34 @@
     <!-- ======================================================== -->
     <div class="center-dock-container">
       <div class="center-floating-dock">
-        <!-- 1. Auto-stop badge -->
-        <button id="toggleAutoStopBtn" class="dock-pill-btn" type="button" title="Avto-to'xtash">
-          <span class="dock-auto-dot"></span>
-          <span id="autoStopLabel">Avto: 0.9s</span>
-        </button>
+        <!-- 1. Left wing: Auto-stop badge -->
+        <div class="dock-left">
+          <button id="toggleAutoStopBtn" class="dock-pill-btn" type="button" title="Avto-to'xtash">
+            <span class="dock-auto-dot"></span>
+            <span id="autoStopLabel">Avto: 0.9s</span>
+          </button>
+        </div>
 
         <!-- 2. Center: Living AI Orb (52px) -->
         <div class="dock-orb-wrap">
           <canvas id="orbCanvas" width="156" height="156" title="Living AI Orb"></canvas>
         </div>
 
-        <!-- 3. Swap Languages button -->
-        <button id="swapLangsBtn" class="dock-icon-btn" title="Tillarni almashtirish" type="button">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/>
-          </svg>
-        </button>
+        <!-- 3. Right wing: Swap & Settings buttons -->
+        <div class="dock-actions">
+          <button id="swapLangsBtn" class="dock-icon-btn" title="Tillarni almashtirish" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/>
+            </svg>
+          </button>
 
-        <!-- 4. Settings button -->
-        <button id="openServerConfigBtn" class="dock-icon-btn" title="Sozlamalar" type="button">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-        </button>
+          <button id="openServerConfigBtn" class="dock-icon-btn" title="Sozlamalar" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
