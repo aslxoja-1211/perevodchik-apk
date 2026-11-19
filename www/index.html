@@ -36,7 +36,7 @@
     }
 
     body {
-      background: #fbfbfd;
+      background: #111111;
       color: var(--text-main);
       height: 100vh;
       height: 100dvh;
@@ -545,9 +545,204 @@
       background: #ffffff;
       flex-shrink: 0;
     }
+
+    /* ========================================================= */
+    /* NATIVE-FEEL ANIMATED SPLASH SCREEN (0.9s "Hop & Pop")     */
+    /* ========================================================= */
+    .splash-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: #111111;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .splash-overlay.splash-dismiss {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .splash-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: -24px;
+    }
+
+    .splash-svg {
+      width: 136px;
+      height: 136px;
+      overflow: visible;
+      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.5));
+    }
+
+    /* 0.0s – 0.35s: logo-h and logo-t elastic spring hop */
+    #logo-h {
+      transform-origin: 395px 488px;
+      will-change: transform, opacity;
+      animation: hopLetterH 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.0s both;
+    }
+
+    #logo-t {
+      transform-origin: 569px 478px;
+      will-change: transform, opacity;
+      animation: hopLetterT 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.04s both;
+    }
+
+    @keyframes hopLetterH {
+      0% {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes hopLetterT {
+      0% {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 0.35s – 0.65s: logo-dot bouncy ball pop */
+    #logo-dot {
+      transform-origin: 589px 737px;
+      will-change: transform, opacity;
+      animation: popDot 0.30s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;
+    }
+
+    @keyframes popDot {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.28);
+      }
+      75% {
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* 0.55s – 0.85s: logo-wave opens like sound wave */
+    #logo-wave {
+      transform-origin: 720px 648px;
+      will-change: transform, opacity;
+      animation: wavePop 0.30s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+    }
+
+    @keyframes wavePop {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-15deg);
+      }
+      70% {
+        opacity: 1;
+        transform: scale(1.08) rotate(3deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    /* 0.55s – 0.85s: splash-title smooth fade-in */
+    #splash-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+      margin-top: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      will-change: transform, opacity;
+      animation: fadeInTitle 0.30s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+    }
+
+    @keyframes fadeInTitle {
+      0% {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 0.55s – 0.85s: splash-brand at bottom */
+    #splash-brand {
+      position: absolute;
+      bottom: max(32px, env(safe-area-inset-bottom, 24px));
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #888888;
+      letter-spacing: 0.3px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      will-change: opacity;
+      animation: fadeInBrand 0.30s ease-out 0.55s both;
+    }
+
+    @keyframes fadeInBrand {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0.85;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ======================================================== -->
+  <!-- ANIMATED NATIVE-STYLE SPLASH SCREEN (0.9s "Hop & Pop")   -->
+  <!-- ======================================================== -->
+  <div id="splashOverlay" class="splash-overlay">
+    <div class="splash-content">
+      <svg id="splashLogoSvg" class="splash-svg" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <path id="logo-h" fill="#FFFFFF" fill-rule="evenodd" d="M 362.0,236.8 L 376.0,237.8 L 392.0,243.7 L 402.0,250.5 L 413.2,263.0 L 421.2,277.0 L 426.5,294.0 L 428.5,310.0 L 427.5,333.0 L 421.2,362.0 L 410.2,392.0 L 403.2,406.0 L 380.5,440.0 L 338.0,482.7 L 333.8,491.0 L 331.5,502.0 L 335.0,510.7 L 355.5,487.0 L 373.0,473.8 L 390.0,465.8 L 412.0,461.5 L 430.0,463.5 L 442.0,467.7 L 453.0,474.5 L 465.2,488.0 L 475.2,509.0 L 478.5,522.0 L 480.5,540.0 L 479.5,565.0 L 473.5,613.0 L 473.5,640.0 L 475.8,651.0 L 480.5,661.0 L 488.0,666.2 L 507.0,665.5 L 511.3,667.0 L 516.2,673.0 L 518.5,682.0 L 517.2,695.0 L 514.2,704.0 L 508.0,715.3 L 493.0,730.2 L 484.0,735.2 L 474.0,738.5 L 453.0,739.5 L 440.0,736.2 L 430.0,731.2 L 421.0,724.5 L 413.0,715.3 L 402.8,696.0 L 396.5,670.0 L 396.5,639.0 L 404.5,578.0 L 404.5,555.0 L 399.2,538.0 L 391.0,528.8 L 383.0,525.5 L 377.0,525.5 L 370.0,527.8 L 358.5,537.0 L 352.8,547.0 L 347.5,566.0 L 346.5,587.0 L 355.5,640.0 L 353.2,647.0 L 348.0,653.5 L 336.0,660.2 L 329.0,662.5 L 314.0,663.5 L 304.0,661.2 L 293.0,655.2 L 287.5,650.0 L 283.8,644.0 L 279.5,631.0 L 271.5,575.0 L 266.5,502.0 L 266.5,442.0 L 268.5,394.0 L 271.5,361.0 L 276.5,333.0 L 281.8,314.0 L 289.8,293.0 L 298.8,277.0 L 307.5,265.0 L 316.0,256.5 L 328.0,247.8 L 346.0,239.8 L 362.0,236.8 Z M 359.0,304.8 L 354.0,307.5 L 347.8,315.0 L 340.8,333.0 L 338.5,343.0 L 335.5,365.0 L 333.5,396.0 L 336.0,428.6 L 345.2,418.0 L 360.3,393.0 L 370.2,368.0 L 374.5,349.0 L 375.5,323.0 L 374.2,316.0 L 368.3,307.0 L 364.0,304.8 L 359.0,304.8 Z" />
+        <path id="logo-t" fill="#FFFFFF" fill-rule="evenodd" d="M 577.0,291.8 L 590.0,291.5 L 602.0,293.8 L 613.0,299.5 L 619.2,308.0 L 620.5,315.0 L 619.5,323.0 L 601.8,394.0 L 602.0,397.9 L 611.0,400.5 L 628.0,400.5 L 650.0,394.5 L 659.0,394.8 L 664.0,397.5 L 668.2,403.0 L 672.5,417.0 L 672.5,426.0 L 668.3,440.0 L 663.5,448.0 L 652.0,458.2 L 644.0,462.2 L 631.0,465.5 L 620.0,466.4 L 591.0,462.9 L 589.6,464.0 L 584.5,490.0 L 580.5,529.0 L 580.5,571.0 L 583.8,584.0 L 586.8,590.0 L 591.0,594.5 L 599.0,598.5 L 613.0,597.2 L 623.5,589.0 L 628.2,580.0 L 629.5,574.0 L 629.5,564.0 L 622.5,542.0 L 624.8,532.0 L 632.7,523.0 L 650.0,513.8 L 667.0,512.5 L 680.3,519.0 L 685.2,524.0 L 691.2,535.0 L 694.5,549.0 L 693.5,571.0 L 687.2,594.0 L 681.2,608.0 L 668.5,627.0 L 653.3,642.0 L 631.0,655.3 L 610.0,662.2 L 591.0,664.5 L 577.0,663.5 L 563.0,660.2 L 542.0,650.2 L 535.0,645.5 L 524.5,635.0 L 511.8,613.0 L 504.5,583.0 L 503.5,554.0 L 505.5,524.0 L 514.5,459.0 L 515.0,445.0 L 505.0,441.5 L 491.0,440.5 L 463.0,447.4 L 458.0,446.2 L 453.0,443.5 L 447.8,438.0 L 444.8,431.0 L 442.8,420.0 L 443.8,411.0 L 449.8,397.0 L 456.0,389.5 L 467.0,381.7 L 477.0,377.8 L 490.0,375.5 L 525.0,378.0 L 528.5,366.0 L 532.8,331.0 L 539.8,313.0 L 548.0,303.5 L 555.0,298.8 L 567.0,293.8 L 577.0,291.8 Z" />
+        <path id="logo-dot" fill="#CCFF00" d="M 582.0,688.8 L 595.0,688.5 L 601.0,689.8 L 611.0,693.7 L 619.3,699.0 L 630.2,711.0 L 637.5,730.0 L 636.2,750.0 L 632.3,760.0 L 626.5,769.0 L 617.3,777.0 L 608.0,782.3 L 591.0,786.5 L 575.0,784.2 L 558.0,775.5 L 547.8,764.0 L 542.8,754.0 L 540.5,745.0 L 540.8,728.0 L 543.8,718.0 L 549.0,708.7 L 563.0,695.8 L 573.0,690.8 L 582.0,688.8 Z" />
+        <path id="logo-wave" fill="#CCFF00" d="M 736.0,594.8 L 742.0,594.8 L 748.0,597.5 L 753.2,603.0 L 756.5,612.0 L 755.2,627.0 L 751.2,638.0 L 744.2,651.0 L 734.5,665.0 L 714.0,684.2 L 700.0,693.2 L 685.0,700.2 L 677.0,702.5 L 669.0,701.2 L 666.6,697.0 L 669.0,691.7 L 693.5,668.0 L 703.2,654.0 L 710.2,639.0 L 719.8,608.0 L 725.0,600.5 L 732.0,595.8 L 736.0,594.8 Z" />
+      </svg>
+      <div id="splash-title" class="splash-title">HopTell</div>
+    </div>
+    <div id="splash-brand" class="splash-brand">by Hoply</div>
+  </div>
 
   <!-- FLOATING TOAST NOTIFICATIONS -->
   <div id="toastContainer"></div>
@@ -2818,6 +3013,17 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
     // Initial Setup
     updateLanguageUI();
+
+    // Native-Feel Animated Splash Dismissal (0.9s "Hop & Pop" animation)
+    setTimeout(() => {
+      const splash = document.getElementById('splashOverlay');
+      if (splash) {
+        splash.classList.add('splash-dismiss');
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 260);
+      }
+    }, 950);
   </script>
 </body>
 </html>

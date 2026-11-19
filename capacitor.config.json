@@ -7,6 +7,15 @@
     "androidScheme": "http"
   },
   "android": {
-    "allowMixedContent": true
+    "allowMixedContent": true,
+    "backgroundColor": "#111111"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#111111",
+      "showSpinner": false
+    }
   }
 }
