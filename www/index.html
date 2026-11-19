@@ -67,7 +67,7 @@
     }
 
     .app-viewport.zoom-entry-active {
-      animation: appZoomIn 0.40s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: appZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes appZoomIn {
@@ -569,7 +569,7 @@
     }
 
     /* ========================================================= */
-    /* YANDEX GO-STYLE "ZOOM-THROUGH" SPLASH SCREEN (1.4s TOTAL) */
+    /* YANDEX GO-STYLE "ZOOM-THROUGH" SPLASH SCREEN (1.1s TOTAL) */
     /* ========================================================= */
     .splash-overlay {
       position: fixed;
@@ -587,6 +587,7 @@
       user-select: none;
       -webkit-user-select: none;
       perspective: 1200px;
+      cursor: pointer;
       will-change: opacity;
     }
 
@@ -601,9 +602,9 @@
       transform-style: preserve-3d;
     }
 
-    /* 3. YANDEX GO USLUBIDAGI "ZOOM-THROUGH" O'TISH (1.05s – 1.45s) */
+    /* 3. YANDEX GO USLUBIDAGI "ZOOM-THROUGH" O'TISH (0.75s – 1.10s) */
     .splash-content.zoom-through {
-      animation: zoomThroughPunch 0.40s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+      animation: zoomThroughPunch 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards;
     }
 
     @keyframes zoomThroughPunch {
@@ -620,9 +621,9 @@
       }
     }
 
-    /* Overlay backdrop fadeout at 1.05s - 1.45s */
+    /* Overlay backdrop fadeout at 0.75s - 1.10s */
     .splash-overlay.overlay-fadeout {
-      animation: splashBackdropFade 0.40s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+      animation: splashBackdropFade 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards;
     }
 
     @keyframes splashBackdropFade {
@@ -642,17 +643,17 @@
       filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.55));
     }
 
-    /* 0.0s – 0.45s (Kirish): Oq h va t harflari sirpanib chiqishi */
+    /* 0.0s – 0.35s (Kirish): Oq h va t harflari sirpanib chiqishi */
     #logo-h {
       transform-origin: 395px 488px;
       will-change: transform, opacity;
-      animation: glideInLetterH 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.0s both;
+      animation: glideInLetterH 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.0s both;
     }
 
     #logo-t {
       transform-origin: 569px 478px;
       will-change: transform, opacity;
-      animation: glideInLetterT 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
+      animation: glideInLetterT 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.03s both;
     }
 
     @keyframes glideInLetterH {
@@ -677,11 +678,12 @@
       }
     }
 
-    /* 0.35s – 0.75s ("Hop" effekti): logo-dot yuqoridan sakrab tushishi */
+    /* 0.22s – 0.55s ("Hop" effekti): logo-dot yuqoridan sakrab tushishi + neon OLED glow */
     #logo-dot {
       transform-origin: 589px 737px;
       will-change: transform, opacity;
-      animation: hopDot 0.40s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;
+      filter: drop-shadow(0 0 10px rgba(204, 255, 0, 0.65));
+      animation: hopDot 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.22s both;
     }
 
     @keyframes hopDot {
@@ -699,11 +701,12 @@
       }
     }
 
-    /* 0.35s – 0.75s: logo-wave silliq yoyilib ochilishi */
+    /* 0.22s – 0.55s: logo-wave silliq yoyilib ochilishi + neon glow */
     #logo-wave {
       transform-origin: 720px 648px;
       will-change: transform, opacity;
-      animation: waveUnfurl 0.40s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+      filter: drop-shadow(0 0 12px rgba(204, 255, 0, 0.5));
+      animation: waveUnfurl 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
     }
 
     @keyframes waveUnfurl {
@@ -721,7 +724,7 @@
       }
     }
 
-    /* 0.55s – 0.90s (Brend imzosi): splash-title letter-spacing kengayishi bilan */
+    /* 0.38s – 0.70s (Brend imzosi): splash-title letter-spacing kengayishi bilan */
     #splash-title {
       font-size: 28px;
       font-weight: 700;
@@ -729,7 +732,7 @@
       margin-top: 16px;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       will-change: transform, opacity, letter-spacing;
-      animation: titleReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+      animation: titleReveal 0.30s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
     }
 
     @keyframes titleReveal {
@@ -745,7 +748,7 @@
       }
     }
 
-    /* 0.55s – 0.90s: splash-brand at bottom with letter-spacing */
+    /* 0.38s – 0.70s: splash-brand at bottom with letter-spacing */
     #splash-brand {
       position: absolute;
       bottom: max(32px, env(safe-area-inset-bottom, 24px));
@@ -757,7 +760,7 @@
       color: #888888;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       will-change: opacity, letter-spacing;
-      animation: brandReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+      animation: brandReveal 0.30s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
     }
 
     @keyframes brandReveal {
@@ -3067,21 +3070,29 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
       }
     } catch (e) {}
 
-    // 1. Taktil sezgi (Haptic) @ 0.45s (yashil nuqta joyiga tushganda)
-    setTimeout(() => {
+    // Pre-warming backend va audio kontekst (fon rejimida ulanishni qizdirish)
+    try {
+      fetch('https://ovozli-tarjimon-api.vercel.app/api/translate', { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
+    } catch (e) {}
+
+    let zoomTriggered = false;
+
+    // Yandex Go uslubidagi "Zoom-Through" o'tish funksiyasi
+    function triggerZoomThrough() {
+      if (zoomTriggered) return;
+      zoomTriggered = true;
+
+      // 2-chi taktil impuls: ilova ichiga "sho'ng'ish" tebranishi (micro-haptic)
       try {
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
           window.Capacitor.Plugins.Haptics.impact({ style: 'LIGHT' });
         } else if (window.AndroidBridge && typeof window.AndroidBridge.vibrate === 'function') {
-          window.AndroidBridge.vibrate(18);
+          window.AndroidBridge.vibrate(12);
         } else if (navigator.vibrate) {
-          navigator.vibrate(18);
+          navigator.vibrate(12);
         }
       } catch (e) {}
-    }, 450);
 
-    // 2. Yandex Go uslubidagi "Zoom-Through" o'tish (1.05s – 1.45s)
-    setTimeout(() => {
       const splash = document.getElementById('splashOverlay');
       const splashContent = splash ? splash.querySelector('.splash-content') : null;
       const appViewport = document.getElementById('app') || document.querySelector('.app-viewport');
@@ -3093,14 +3104,40 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
         appViewport.classList.add('zoom-entry-active');
       }
 
-      // 3. O'tish tugagach (1.45s da) splash DOM elementini o'chirish
+      // 0.35s o'tish tugagach splash DOM elementini to'liq o'chirish
       setTimeout(() => {
         if (splash) {
           splash.style.display = 'none';
           splash.remove();
         }
-      }, 400); // 1050ms + 400ms = 1450ms (1.45s)
-    }, 1050);
+      }, 360);
+    }
+
+    // Tap-to-Skip: foydalanuvchi ekranni bosganda kutmasdan darhol o'tib ketish
+    const splashOverlayEl = document.getElementById('splashOverlay');
+    if (splashOverlayEl) {
+      splashOverlayEl.addEventListener('click', triggerZoomThrough, { once: true });
+      splashOverlayEl.addEventListener('touchstart', triggerZoomThrough, { once: true, passive: true });
+    }
+
+    // 1-chi taktil sezgi: 0.35s da yashil nuqta o'z joyiga tushgan lahzada
+    setTimeout(() => {
+      if (zoomTriggered) return;
+      try {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
+          window.Capacitor.Plugins.Haptics.impact({ style: 'LIGHT' });
+        } else if (window.AndroidBridge && typeof window.AndroidBridge.vibrate === 'function') {
+          window.AndroidBridge.vibrate(18);
+        } else if (navigator.vibrate) {
+          navigator.vibrate(18);
+        }
+      } catch (e) {}
+    }, 350);
+
+    // Tabiiy avtomatik Zoom-Through o'tish: 0.75s da boshlanadi (jami 1.1s)
+    setTimeout(() => {
+      triggerZoomThrough();
+    }, 750);
   </script>
 </body>
 </html>
