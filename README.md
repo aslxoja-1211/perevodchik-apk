@@ -1,4 +1,14 @@
-# HopTell — Smart AI Voice Translator (Android)
+<p align="center">
+  <img src="assets/logo.png" alt="HopTell Logo" width="130" style="border-radius: 26px;" />
+</p>
+
+<h1 align="center">HopTell — Smart AI Voice Translator</h1>
+
+<p align="center">
+  <b>Jonli ikki tomonlama AI ovozli tarjimon ilovasi (Android)</b>
+</p>
+
+---
 
 **HopTell** — jonli nutqni bir zumda aniqlab, neyron tarmoqlar (Google Gemini AI) orqali tabiiy rus, turk, ingliz, xitoy va o'zbek tillariga tarjima qiluvchi hamda Android ovoz tizimida ravon gapirib beruvchi **mustaqil mobil ilova**.
 
