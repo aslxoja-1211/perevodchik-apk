@@ -1035,7 +1035,7 @@
         <div class="dock-left">
           <button id="toggleAutoStopBtn" class="dock-pill-btn" type="button" title="Avto-to'xtash">
             <span class="dock-auto-dot"></span>
-            <span id="autoStopLabel">Avto: 0.9s</span>
+            <span id="autoStopLabel">Avto: 1.4s</span>
           </button>
         </div>
 
@@ -1554,8 +1554,8 @@
       activeModalTarget: 'src',
 
       // Auto-Stop VAD Settings (Tez: 0.9s default)
-      autoStopMode: localStorage.getItem('perevodchik_autostop_mode_v2') || '0.9s',
-      silenceThresholdMs: 900,
+      autoStopMode: localStorage.getItem('perevodchik_autostop_mode_v2') || '1.4s',
+      silenceThresholdMs: 1400,
       voiceRmsThreshold: 0.011,
       ambientNoiseRms: 0.0,
       calibrationFrames: 0,
@@ -1624,9 +1624,9 @@
     }
 
     // Sync silenceThresholdMs with saved autoStopMode
-    if (state.autoStopMode === '1.4s') state.silenceThresholdMs = 1400;
+    if (state.autoStopMode === '0.9s') state.silenceThresholdMs = 900;
     else if (state.autoStopMode === "Qo'lda") state.silenceThresholdMs = 999999;
-    else { state.autoStopMode = '0.9s'; state.silenceThresholdMs = 900; }
+    else { state.autoStopMode = '1.4s'; state.silenceThresholdMs = 1400; }
 
     // Real-time network status notifications
     window.addEventListener('offline', () => {
@@ -2091,7 +2091,7 @@
       }
     }
 
-    // Master Speech Function (Ultra-fast hybrid engine: 0.2s Google TTS for ru/tr/en/zh + Studio HD Neural TTS for Uzbek)
+    // Master Speech Function (High-Definition Studio Neural Voice for ALL languages)
     async function speakText(text, langCode) {
       if (!text || !text.trim()) return;
       var targetLang = langCode || state.targetLang || 'uz';
@@ -2108,36 +2108,7 @@
         return;
       }
 
-      // 2. Ultra-Fast Direct Streaming TTS for Foreign Languages (~0.2s latency, zero rate limits!)
-      if (targetLang !== 'uz') {
-        try {
-          var tlMap = { ru: 'ru', tr: 'tr', en: 'en', zh: 'zh-CN' };
-          var tl = tlMap[targetLang] || targetLang;
-          var chunks = splitSpeechChunks(cleanText, 175);
-          var queueItems = chunks.map(function(chunk) {
-            return {
-              audio: {
-                type: 'url',
-                data: 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(chunk) + '&tl=' + tl + '&client=tw-ob'
-              },
-              text: chunk,
-              lang: targetLang
-            };
-          });
-          if (queueItems.length === 1) {
-            setAudioCache(cacheKey, queueItems[0].audio);
-          }
-          var first = queueItems.shift();
-          state.ttsQueue = queueItems;
-          setReplayIconLoading(targetLang, false);
-          playAudio(first.audio, first.text, first.lang);
-          return;
-        } catch (e) {
-          console.warn("Fast TTS error:", e);
-        }
-      }
-
-      // 3. Dedicated High-Definition Studio Neural Voice (Google Gemini) for Uzbek
+      // 2. High-Definition Studio Neural Voice (Google Gemini) for ALL languages (uz, ru, tr, en, zh)
       try {
         var wavB64 = await fetchNeuralTTS(cleanText, targetLang);
         if (wavB64) {
@@ -2148,6 +2119,18 @@
         }
       } catch (err) {
         console.warn("Neural TTS fetch error:", err);
+      }
+
+      // 3. Fallback Streaming TTS if Neural Voice fails or is offline
+      try {
+        var tlMap = { ru: 'ru', tr: 'tr', en: 'en', zh: 'zh-CN', uz: 'uz' };
+        var tl = tlMap[targetLang] || targetLang;
+        var audioUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(cleanText.slice(0, 160)) + '&tl=' + tl + '&client=tw-ob';
+        setReplayIconLoading(targetLang, false);
+        playAudio({ type: 'url', data: audioUrl }, cleanText, targetLang);
+        return;
+      } catch (e) {
+        console.warn("Fast TTS error:", e);
       }
 
       setReplayIconLoading(targetLang, false);
@@ -2290,22 +2273,22 @@
       updateLanguageUI();
     });
 
-    // Auto-Stop Mode Toggle (0.9s Tez -> 1.4s Normal -> Qo'lda)
+    // Auto-Stop Mode Toggle (1.4s Normal -> 0.9s Tez -> Qo'lda)
     toggleAutoStopBtn.addEventListener('click', () => {
       haptic(14);
       const srcL = state.sourceLang;
-      if (state.autoStopMode === '0.9s') {
-        state.autoStopMode = '1.4s';
-        state.silenceThresholdMs = 1400;
-        showToast(t(srcL, 'toastAutoNormal'), "info", 1500);
-      } else if (state.autoStopMode === '1.4s') {
+      if (state.autoStopMode === '1.4s') {
+        state.autoStopMode = '0.9s';
+        state.silenceThresholdMs = 900;
+        showToast(t(srcL, 'toastAutoFast'), "info", 1500);
+      } else if (state.autoStopMode === '0.9s') {
         state.autoStopMode = "Qo'lda";
         state.silenceThresholdMs = 999999;
         showToast(t(srcL, 'toastManual'), "info", 1500);
       } else {
-        state.autoStopMode = '0.9s';
-        state.silenceThresholdMs = 900;
-        showToast(t(srcL, 'toastAutoFast'), "success", 1500);
+        state.autoStopMode = '1.4s';
+        state.silenceThresholdMs = 1400;
+        showToast(t(srcL, 'toastAutoNormal'), "success", 1500);
       }
       localStorage.setItem('perevodchik_autostop_mode_v2', state.autoStopMode);
       updateLanguageUI();
@@ -2552,7 +2535,6 @@
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             channelCount: 1,
-            sampleRate: 16000,
             echoCancellation: true,
             noiseSuppression: true,
             autoGainControl: true
@@ -2560,14 +2542,14 @@
         });
         state.mediaStream = stream;
 
-        // 1. Start MediaRecorder IMMEDIATELY with 16kbps Opus compression (6-8x smaller & faster upload!)
+        // 1. Start MediaRecorder with 64kbps Opus compression for studio-grade clarity
         let mime = 'audio/webm;codecs=opus';
         if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/webm';
         if (!MediaRecorder.isTypeSupported(mime)) mime = 'audio/mp4';
         if (!MediaRecorder.isTypeSupported(mime)) mime = '';
 
         state.mediaRecorderMime = mime || 'audio/webm';
-        const recOptions = mime ? { mimeType: mime, audioBitsPerSecond: 16000 } : { audioBitsPerSecond: 16000 };
+        const recOptions = mime ? { mimeType: mime, audioBitsPerSecond: 64000 } : { audioBitsPerSecond: 64000 };
         try {
           state.mediaRecorder = new MediaRecorder(stream, recOptions);
         } catch (_) {
@@ -2591,8 +2573,9 @@
 
           const bufferLength = state.analyser.fftSize;
           const dataArray = new Float32Array(bufferLength);
+          const recStartTime = Date.now();
 
-          // Fast Adaptive VAD Loop (40ms interval, 160ms quick calibration!)
+          // Robust Adaptive VAD Loop (40ms interval)
           const vadInterval = setInterval(() => {
             if (!state.isRecording) {
               clearInterval(vadInterval);
@@ -2609,29 +2592,33 @@
             state.audioLevel = Math.min(1.0, rms * 5.0);
             activeBtn.style.setProperty('--voice-level', state.audioLevel.toFixed(2));
 
-            // Ultra-fast 4-frame (160ms) ambient calibration
-            if (state.calibrationFrames < 4) {
+            // Ignore first 260ms to skip finger tap / chime tail in ambient calibration
+            if (Date.now() - recStartTime < 260) {
+              return;
+            }
+
+            if (state.calibrationFrames < 5) {
               state.ambientNoiseRms = (state.ambientNoiseRms * state.calibrationFrames + rms) / (state.calibrationFrames + 1);
               state.calibrationFrames++;
               return;
             }
 
-            const threshold = Math.max(state.voiceRmsThreshold, Math.min(0.06, state.ambientNoiseRms * 2.1));
+            // Reliable speech threshold clamped so natural voice is never ignored
+            const threshold = Math.max(0.012, Math.min(0.032, state.ambientNoiseRms * 1.8));
 
             if (rms > threshold) {
               state.lastVoiceTime = Date.now();
               state.speechFramesCount++;
-              if (!state.hasSpoken && state.speechFramesCount >= 2) {
+              if (!state.hasSpoken && state.speechFramesCount >= 3) {
                 state.hasSpoken = true;
                 state.speechStartTime = Date.now();
               }
             } else {
-              // Slowly adapt noise floor down if room gets quieter
               state.ambientNoiseRms = state.ambientNoiseRms * 0.98 + rms * 0.02;
               if (state.hasSpoken && state.silenceThresholdMs < 90000) {
                 const silenceDuration = Date.now() - state.lastVoiceTime;
                 const totalSpeech = Date.now() - state.speechStartTime;
-                if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 400) {
+                if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 450) {
                   clearInterval(vadInterval);
                   stopRecording(true);
                 }
@@ -2848,12 +2835,24 @@
 
         const cleanMime = (audioBlob.type || state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
 
-        const prompt = `You are a professional live bilingual interpreter.
-Speaker language: ${LANG_DATA[srcL]?.name || srcL}. Target language: ${LANG_DATA[tgtL]?.name || tgtL}.${getContextHint()}
-Rules:
-1. Transcribe spoken words accurately into "source_text" (for Uzbek use standard Latin script with proper o' and g', understand spoken/colloquial Uzbek & everyday loanwords).
-2. Translate naturally and idiomatically into "translated_text" as a human interpreter: preserve politeness/formality (siz->Вы/siz, sen->ты/sen), exact numbers, prices, and names. No explanations, no notes, no markdown.
-3. If the audio contains only background noise, silence, breath, or unintelligible sound, return empty strings and "no_speech": true.
+        const LANG_FULL_NAMES = {
+          uz: "Uzbek (O'zbek tili)",
+          ru: "Russian (Русский язык)",
+          tr: "Turkish (Türkçe)",
+          en: "English",
+          zh: "Chinese (Mandarin)"
+        };
+        const srcFullName = LANG_FULL_NAMES[srcL] || LANG_DATA[srcL]?.name || srcL;
+        const tgtFullName = LANG_FULL_NAMES[tgtL] || LANG_DATA[tgtL]?.name || tgtL;
+
+        const prompt = `You are an expert bilingual live speech interpreter.
+Speaker Language: ${srcFullName}.
+Target Translation Language: ${tgtFullName}.${getContextHint()}
+
+Instructions:
+1. Transcribe the entire spoken audio accurately into "source_text". For Uzbek: write in standard modern Latin alphabet with proper o' and g', recognizing colloquial spoken expressions, everyday loanwords, and numbers.
+2. Translate "source_text" accurately and naturally into "translated_text" in ${tgtFullName}. Preserve exact meaning, tone, and appropriate politeness (siz->Вы/siz, sen->ты/sen). Do not add notes or explanations.
+3. If the audio is pure background silence, static, or breath with no human speech, return empty strings and "no_speech": true.
 Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech":false}`;
 
         const contents = [{
