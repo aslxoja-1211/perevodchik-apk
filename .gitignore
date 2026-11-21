@@ -19,4 +19,10 @@ Thumbs.db
 *.mp3
 .github/
 
+# Android Signing Keystores & Properties (Do NOT commit to git!)
+*.jks
+*.keystore
+key.properties
+
+
 
