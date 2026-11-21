@@ -14,5 +14,10 @@
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, X-App-Client" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/api/privacy" },
+    { "source": "/privacy", "destination": "/api/privacy" },
+    { "source": "/privacy-policy", "destination": "/api/privacy" }
   ]
 }

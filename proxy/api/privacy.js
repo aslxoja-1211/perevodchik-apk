@@ -1,0 +1,287 @@
+// HopTell Official Privacy Policy Handler for Vercel
+// Compliant with Google Play Developer Policy (Audio & Data Safety)
+
+module.exports = function handler(req, res) {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — HopTell Voice Translator</title>
+  <style>
+    :root {
+      --bg: #0D0D0D;
+      --card-bg: #18181B;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #CCFF00;
+      --text: #FAFAFA;
+      --text-sub: #A1A1AA;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px 80px;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(204, 255, 0, 0.12);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 1px solid rgba(204, 255, 0, 0.3);
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .last-updated {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    p, li {
+      color: #E4E4E7;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+    li { margin-bottom: 6px; }
+    .highlight-box {
+      background: rgba(204, 255, 0, 0.05);
+      border-left: 4px solid var(--accent);
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      margin: 14px 0;
+    }
+    .lang-switch {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .lang-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--text-sub);
+      font-size: 13px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Google Play Compliance</div>
+    <h1>HopTell — Privacy Policy</h1>
+    <div class="last-updated">Effective Date: November 21, 2026 | Application: <strong>HopTell (com.ovozli.tarjimon)</strong></div>
+
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="switchLang('en')">English</button>
+      <button class="lang-btn" onclick="switchLang('uz')">O'zbekcha</button>
+      <button class="lang-btn" onclick="switchLang('ru')">Русский</button>
+    </div>
+
+    <!-- ENGLISH CONTENT -->
+    <div id="content-en">
+      <div class="section">
+        <h2>1. Overview</h2>
+        <p>This Privacy Policy explains how <strong>HopTell</strong> ("we", "our", or "the app") handles your personal data, voice audio, and permissions. We respect your privacy and are committed to protecting your personal information.</p>
+        <p>HopTell is an instantaneous bilingual face-to-face voice translator. <strong>We do not sell, rent, or monetize your personal data or voice recordings.</strong></p>
+      </div>
+
+      <div class="section">
+        <h2>2. Permissions and Audio Data (RECORD_AUDIO)</h2>
+        <p>To provide live real-time voice translation, HopTell requires access to your device's microphone (<code>android.permission.RECORD_AUDIO</code>).</p>
+        <div class="highlight-box">
+          <p><strong>Core Guarantee:</strong> Microphone access is used <em>strictly and solely</em> while you press and hold or actively trigger the microphone button. We do NOT record background audio in the background or when the app is closed.</p>
+        </div>
+        <ul>
+          <li><strong>Transient Processing:</strong> Your speech audio is captured locally and transmitted via encrypted HTTPS (TLS 1.3) solely for transcription and translation.</li>
+          <li><strong>No Permanent Audio Storage:</strong> Audio clips are processed in memory and are <strong>immediately discarded</strong> once the translation is complete. We do NOT store audio files on remote servers.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>3. Information We Collect and Process</h2>
+        <ul>
+          <li><strong>Voice and Speech Input:</strong> Processed ephemerally to generate text translations.</li>
+          <li><strong>Translated Text:</strong> Displayed on screen and stored only locally on your device's private storage (temporary offline cache) for zero-latency instant replay. It is never uploaded to permanent external databases.</li>
+          <li><strong>Device & Network Information:</strong> Basic anonymous network status (online/offline) to inform you of internet availability.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>4. Third-Party Service Providers</h2>
+        <p>To deliver world-class translation and neural voice synthesis, HopTell uses secure cloud infrastructure:</p>
+        <ul>
+          <li><strong>Google Gemini API:</strong> Used for multilingual speech recognition, text translation, and studio neural speech synthesis. Google processes data pursuant to Google Cloud's data privacy commitments.</li>
+          <li><strong>Vercel Cloud Network:</strong> Used as a secure serverless gateway to protect API keys and manage rate limits.</li>
+        </ul>
+        <p>Neither we nor our service providers use your private conversations to train public generative AI models.</p>
+      </div>
+
+      <div class="section">
+        <h2>5. Data Security</h2>
+        <p>All data exchanged between HopTell and cloud translation servers is encrypted using industry-standard HTTPS / TLS (Transport Layer Security) encryption. We enforce zero API key exposure on client devices.</p>
+      </div>
+
+      <div class="section">
+        <h2>6. Children's Privacy</h2>
+        <p>HopTell does not knowingly collect personal identifiable information from children under the age of 13. If you believe a child has provided us with personal information, please contact us and we will promptly delete it.</p>
+      </div>
+
+      <div class="section">
+        <h2>7. Managing Your Permissions</h2>
+        <p>You can revoke microphone permission at any time through your Android device settings:</p>
+        <p><code>Settings → Apps → HopTell → Permissions → Microphone → Deny</code></p>
+        <p><em>Note: If microphone permission is denied, voice translation will be unavailable, but text editing and viewing will continue to function.</em></p>
+      </div>
+
+      <div class="section">
+        <h2>8. Contact Us</h2>
+        <p>If you have any questions or inquiries about this Privacy Policy or data safety practices, please contact us:</p>
+        <ul>
+          <li><strong>Developer:</strong> HopTell Team</li>
+          <li><strong>Email:</strong> <a href="mailto:boss6220developer@gmail.com">boss6220developer@gmail.com</a></li>
+          <li><strong>Package Name:</strong> com.ovozli.tarjimon</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- UZBEK CONTENT -->
+    <div id="content-uz" style="display:none;">
+      <div class="section">
+        <h2>1. Umumiy Ma'lumot</h2>
+        <p>Ushbu Maxfiylik Siyosati <strong>HopTell</strong> ("biz" yoki "ilova") foydalanuvchilarining shaxsiy ma'lumotlari, mikrofon ovozi va ruxsatnomalarini qanday qayta ishlashini tushuntiradi. Biz foydalanuvchi maxfiyligini to'liq hurmat qilamiz.</p>
+        <p>HopTell — bu jonli yuzma-yuz ovozli tarjimon ilovasi. <strong>Biz sizning ovozli yozuvlaringizni yoki shaxsiy ma'lumotlaringizni hech qachon saqlamaymiz, sotmaymiz va uchinchi shaxslarga bermaymiz.</strong></p>
+      </div>
+
+      <div class="section">
+        <h2>2. Ruxsatlar va Mikrofon Ovozi (RECORD_AUDIO)</h2>
+        <p>Jonli ovozli tarjima xizmatini ko'rsatish uchun ilova mikrofon ruxsatini (<code>android.permission.RECORD_AUDIO</code>) talab qiladi.</p>
+        <div class="highlight-box">
+          <p><strong>Asosiy kafolat:</strong> Mikrofon faqatgina siz ekrandagi mikrofon tugmasini bosib gapirgan vaqtingizda ishlaydi. Ilova yopilganda yoki orqa fonda (background) hech qachon ovoz yozib olinmaydi.</p>
+        </div>
+        <ul>
+          <li><strong>Vaqtinchalik qayta ishlash:</strong> Ovoz faqat tarjima qilish uchun shifrlangan TLS kanali orqali uzatiladi.</li>
+          <li><strong>Doimiy saqlanmaslik:</strong> Tarjima yakunlanishi bilan ovozli yozuv xotiradan butunlay o'chiriladi. Tashqi serverlarda ovozlar saqlanmaydi.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>3. Uchinchi Tomon Provayderlari</h2>
+        <p>Yuqori sifatli tarjima va neyron diktor ovozini ta'minlash uchun Google Gemini xavfsiz API tizimidan foydalaniladi. Sizning suhbatlaringiz hech qachon umumiy sun'iy intellekt modellarini o'qitish uchun ishlatilmaydi.</p>
+      </div>
+
+      <div class="section">
+        <h2>4. Ma'lumotlar Xavfsizligi</h2>
+        <p>Ilova va server o'rtasidagi barcha ma'lumotlar almashinuvi xalqaro HTTPS/TLS 1.3 shifrlash protokollari bilan himoyalangan.</p>
+      </div>
+
+      <div class="section">
+        <h2>5. Bog'lanish</h2>
+        <p>Savollar va takliflar bo'yicha biz bilan bog'lanishingiz mumkin:</p>
+        <ul>
+          <li><strong>Dasturchi:</strong> HopTell Team</li>
+          <li><strong>Email:</strong> <a href="mailto:boss6220developer@gmail.com">boss6220developer@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RUSSIAN CONTENT -->
+    <div id="content-ru" style="display:none;">
+      <div class="section">
+        <h2>1. Общие Положения</h2>
+        <p>Настоящая Политика конфиденциальности описывает, как <strong>HopTell</strong> обрабатывает голосовые данные и разрешения. Мы гарантируем защиту вашей конфиденциальности.</p>
+        <p><strong>Мы не собираем, не храним и не передаем ваши голосовые записи третьим лицам в коммерческих целях.</strong></p>
+      </div>
+
+      <div class="section">
+        <h2>2. Разрешение на использование микрофона (RECORD_AUDIO)</h2>
+        <p>Микрофон используется исключительно во время нажатия кнопки записи для распознавания речи и мгновенного перевода.</p>
+        <div class="highlight-box">
+          <p>Голосовые данные обрабатываются в оперативной памяти в режиме реального времени и <strong>немедленно удаляются</strong> после завершения перевода.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>3. Безопасность и Шифрование</h2>
+        <p>Все сетевые запросы надежно зашифрованы с использованием протоколов HTTPS / TLS 1.3.</p>
+      </div>
+
+      <div class="section">
+        <h2>4. Контакты</h2>
+        <p>По любым вопросам конфиденциальности обращайтесь:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:boss6220developer@gmail.com">boss6220developer@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2026 HopTell. All rights reserved. | <a href="https://ovozli-tarjimon-api.vercel.app">ovozli-tarjimon-api.vercel.app</a>
+    </footer>
+  </div>
+
+  <script>
+    function switchLang(lang) {
+      document.getElementById('content-en').style.display = lang === 'en' ? 'block' : 'none';
+      document.getElementById('content-uz').style.display = lang === 'uz' ? 'block' : 'none';
+      document.getElementById('content-ru').style.display = lang === 'ru' ? 'block' : 'none';
+      
+      const btns = document.querySelectorAll('.lang-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>`;
+
+  res.status(200).send(html);
+};
