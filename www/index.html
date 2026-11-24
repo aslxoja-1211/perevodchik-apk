@@ -2783,8 +2783,8 @@
             state.audioLevel = Math.min(1.0, rms * 5.0);
             activeBtn.style.setProperty('--voice-level', state.audioLevel.toFixed(2));
 
-            // Ignore first 260ms to skip finger tap / chime tail in ambient calibration
-            if (Date.now() - recStartTime < 260) {
+            // Ignore first 380ms to skip finger tap / chime tail in ambient calibration
+            if (Date.now() - recStartTime < 380) {
               return;
             }
 
@@ -2795,7 +2795,7 @@
             }
 
             // Reliable speech threshold clamped so natural voice is never ignored
-            const threshold = Math.max(0.012, Math.min(0.032, state.ambientNoiseRms * 1.8));
+            const threshold = Math.max(0.015, Math.min(0.035, state.ambientNoiseRms * 1.8));
 
             if (rms > threshold) {
               state.lastVoiceTime = Date.now();
@@ -2809,7 +2809,7 @@
               if (state.hasSpoken && state.silenceThresholdMs < 90000) {
                 const silenceDuration = Date.now() - state.lastVoiceTime;
                 const totalSpeech = Date.now() - state.speechStartTime;
-                if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 450) {
+                if (silenceDuration >= state.silenceThresholdMs && totalSpeech >= 500) {
                   clearInterval(vadInterval);
                   stopRecording(true);
                 }
@@ -2856,28 +2856,43 @@
           }
 
           if (shouldProcess && state.recordedMediaChunks.length > 0) {
-            const cleanMime = (state.mediaRecorderMime || 'audio/webm').split(';')[0].trim();
+            const actualMime = (state.mediaRecorder && state.mediaRecorder.mimeType)
+              ? state.mediaRecorder.mimeType
+              : (state.mediaRecorderMime || 'audio/webm');
+            const cleanMime = actualMime.split(';')[0].trim() || 'audio/webm';
             const blob = new Blob(state.recordedMediaChunks, { type: cleanMime });
             console.log("Compressed audio blob ready, size:", blob.size, "mime:", cleanMime);
-            if (blob.size >= 350) {
+            if (blob.size >= 2000) {
               processAudioSpeech(blob, speaker);
             } else {
-              console.warn("Audio too short (<350 bytes), ignoring:", blob.size);
+              console.warn("Audio too short (<2000 bytes), ignoring:", blob.size);
               resetStatusDisplay();
               state.orbMode = 0;
-              showToast(t(state.sourceLang, 'toastTooShort'), "warning", 1800);
+              if (state.isHandsFree) {
+                // Resume hands-free listening smoothly without error
+                if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+                state.handsFreeTimer = setTimeout(() => {
+                  if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+                    startRecording(speaker);
+                  }
+                }, 500);
+              } else {
+                showToast(t(state.sourceLang, 'toastTooShort'), "warning", 1800);
+              }
             }
           } else {
             resetStatusDisplay();
             state.orbMode = 0;
+            if (state.isHandsFree) {
+              if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+              state.handsFreeTimer = setTimeout(() => {
+                if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+                  startRecording(speaker);
+                }
+              }, 500);
+            }
           }
         };
-
-        try {
-          if (state.mediaRecorder.state === 'recording') {
-            state.mediaRecorder.requestData();
-          }
-        } catch (_) {}
 
         try {
           state.mediaRecorder.stop();
@@ -2989,6 +3004,8 @@
         showToast(t(srcL, 'toastApi401'), "error", 4500);
         geminiApiKeyInput.value = state.geminiApiKey || '';
         serverModal.classList.remove('hidden');
+      } else if (msg.includes('Unable to process input') || msg.includes('corrupted') || msg.includes('malformed') || msg.includes('HTTP 400')) {
+        showToast(t(srcL, 'toastNoSpeech'), "warning", 2200);
       } else if (msg.includes('AbortError') || msg.includes('aborted')) {
         showToast(t(srcL, 'toastSlowNet'), "warning", 3200);
       } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
