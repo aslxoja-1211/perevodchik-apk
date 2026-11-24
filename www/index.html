@@ -280,6 +280,67 @@
       background: rgba(255, 255, 255, 0.12);
     }
 
+    .hands-free-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #E4E4E7;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hands-free-btn:active {
+      transform: scale(0.95);
+    }
+
+    .hands-free-btn.active {
+      background: rgba(204, 255, 0, 0.16);
+      border-color: #CCFF00;
+      color: #CCFF00;
+      box-shadow: 0 0 16px rgba(204, 255, 0, 0.35);
+    }
+
+    .hands-free-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #71717A;
+      transition: all 0.25s ease;
+    }
+
+    .hands-free-btn.active .hands-free-dot {
+      background: #CCFF00;
+      box-shadow: 0 0 8px rgba(204, 255, 0, 0.9);
+      animation: pulseHandsFree 1.5s infinite;
+    }
+
+    @keyframes pulseHandsFree {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.55; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .dock-autostop-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: #A1A1AA;
+      width: 38px;
+      height: 38px;
+    }
+
+    .dock-autostop-btn:hover,
+    .dock-autostop-btn:active {
+      color: #CCFF00;
+      border-color: rgba(204, 255, 0, 0.4);
+    }
+
     .dock-auto-dot {
       display: inline-block;
       width: 6px;
@@ -1031,21 +1092,25 @@
     <!-- ======================================================== -->
     <div class="center-dock-container">
       <div class="center-floating-dock">
-        <!-- 1. Left wing: Auto-stop badge -->
+        <!-- 1. Left wing: Hands-Free Mode Toggle -->
         <div class="dock-left">
-          <button id="toggleAutoStopBtn" class="dock-pill-btn" type="button" title="Avto-to'xtash">
-            <span class="dock-auto-dot"></span>
-            <span id="autoStopLabel">Avto: 1.4s</span>
+          <button id="toggleHandsFreeBtn" class="dock-pill-btn hands-free-btn" type="button" title="Hands-Free: Stol usti avtomatik suhbati">
+            <span class="hands-free-dot"></span>
+            <span id="handsFreeLabel">Hands-Free</span>
           </button>
         </div>
 
         <!-- 2. Center: Living AI Orb (52px) -->
         <div class="dock-orb-wrap">
-          <canvas id="orbCanvas" width="156" height="156" title="Living AI Orb"></canvas>
+          <canvas id="orbCanvas" width="156" height="156" title="Living AI Orb (Hands-Free uchun bosing)"></canvas>
         </div>
 
-        <!-- 3. Right wing: Swap & Settings buttons -->
+        <!-- 3. Right wing: Auto-stop, Swap & Settings buttons -->
         <div class="dock-actions">
+          <button id="toggleAutoStopBtn" class="dock-icon-btn dock-autostop-btn" type="button" title="Avto-to'xtash sezgirligi">
+            <span id="autoStopLabel">1.4s</span>
+          </button>
+
           <button id="swapLangsBtn" class="dock-icon-btn" title="Tillarni almashtirish" type="button">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/>
@@ -1317,7 +1382,13 @@
         toastMicDenied: "Mikrofonga ruxsat berilmadi",
         toastApi401: "API kalit eskirgan (401). Sozlamalarda yangilang.",
         toastSlowNet: "Internet juda sust — qayta urinib ko'ring",
-        toastBusy: "Google AI vaqtincha band — 2 soniyadan so'ng urinib ko'ring"
+        toastBusy: "Google AI vaqtincha band — 2 soniyadan so'ng urinib ko'ring",
+        handsFree: "Hands-Free",
+        handsFreeOn: "Hands-Free: ON",
+        handsFreeListening: "Eshitilmoqda (Hands-Free)...",
+        handsFreeWaiting: "Kutilmoqda...",
+        toastHandsFreeOn: "Hands-Free faol! Telefonni stolga qo'ying va bemalol gapiring",
+        toastHandsFreeOff: "Hands-Free to'xtatildi"
       },
       ru: {
         listen: "Слушать",
@@ -1365,7 +1436,13 @@
         toastMicDenied: "Нет доступа к микрофону",
         toastApi401: "API ключ недействителен (401)",
         toastSlowNet: "Слабый интернет — попробуйте снова",
-        toastBusy: "Сервер временно занят — повторите"
+        toastBusy: "Сервер временно занят — повторите",
+        handsFree: "Hands-Free",
+        handsFreeOn: "Hands-Free: ВКЛ",
+        handsFreeListening: "Слушаю (Hands-Free)...",
+        handsFreeWaiting: "Ожидание...",
+        toastHandsFreeOn: "Hands-Free активен! Положите телефон на стол и говорите",
+        toastHandsFreeOff: "Hands-Free выключен"
       },
       tr: {
         listen: "Dinle",
@@ -1413,7 +1490,13 @@
         toastMicDenied: "Mikrofon izni verilmedi",
         toastApi401: "API anahtarı geçersiz (401)",
         toastSlowNet: "İnternet çok yavaş — tekrar deneyin",
-        toastBusy: "Sunucu geçici olarak meşgul"
+        toastBusy: "Sunucu geçici olarak meşgul",
+        handsFree: "Hands-Free",
+        handsFreeOn: "Hands-Free: AÇIK",
+        handsFreeListening: "Dinleniyor (Hands-Free)...",
+        handsFreeWaiting: "Bekleniyor...",
+        toastHandsFreeOn: "Hands-Free aktif! Telefonu masaya koyun ve konuşun",
+        toastHandsFreeOff: "Hands-Free kapatıldı"
       },
       en: {
         listen: "Listen",
@@ -1461,7 +1544,13 @@
         toastMicDenied: "Microphone permission denied",
         toastApi401: "Invalid API key (401)",
         toastSlowNet: "Slow connection — please retry",
-        toastBusy: "AI server busy — try again shortly"
+        toastBusy: "AI server busy — try again shortly",
+        handsFree: "Hands-Free",
+        handsFreeOn: "Hands-Free: ON",
+        handsFreeListening: "Listening (Hands-Free)...",
+        handsFreeWaiting: "Waiting...",
+        toastHandsFreeOn: "Hands-Free active! Place phone on table and speak freely",
+        toastHandsFreeOff: "Hands-Free disabled"
       },
       zh: {
         listen: "收听",
@@ -1509,7 +1598,13 @@
         toastMicDenied: "未获得麦克风权限",
         toastApi401: "API 密钥无效 (401)",
         toastSlowNet: "网络较慢，请重试",
-        toastBusy: "服务器繁忙，请稍后再试"
+        toastBusy: "服务器繁忙，请稍后再试",
+        handsFree: "免提模式",
+        handsFreeOn: "免提: 开启",
+        handsFreeListening: "正在聆听 (免提)...",
+        handsFreeWaiting: "等待中...",
+        toastHandsFreeOn: "免提模式已开启！请将手机平放即可自由交谈",
+        toastHandsFreeOff: "免提模式已关闭"
       }
     };
 
@@ -1585,9 +1680,12 @@
       lastTurnTimestamp: 0,
       activeRequestId: 0, // Race-condition guard against stale slow responses
 
-      // Visuals
+      // Visuals & Hands-Free
       audioLevel: 0.0,
-      orbMode: 0 // 0: idle, 1: recording, 2: processing, 3: speaking
+      orbMode: 0, // 0: idle, 1: recording, 2: processing, 3: speaking
+      isHandsFree: false,
+      handsFreeSpeaker: 'user',
+      handsFreeTimer: null
     };
 
     // Load persistent frequent phrase translation cache (instant 0ms translation for repeated phrases)
@@ -1767,8 +1865,10 @@
     const partnerMicLabel = document.getElementById('partnerMicLabel');
     const flipOrientationBtn = document.getElementById('flipOrientationBtn');
 
-    // DOM Elements - Equator
+    // DOM Elements - Equator & Hands-Free
     const swapLangsBtn = document.getElementById('swapLangsBtn');
+    const toggleHandsFreeBtn = document.getElementById('toggleHandsFreeBtn');
+    const handsFreeLabel = document.getElementById('handsFreeLabel');
     const toggleAutoStopBtn = document.getElementById('toggleAutoStopBtn');
     const autoStopLabel = document.getElementById('autoStopLabel');
     const openServerConfigBtn = document.getElementById('openServerConfigBtn');
@@ -1827,11 +1927,31 @@
       }
       state.orbMode = 0;
       state.isSpeaking = false;
+
+      // Hands-Free continuous conversation turn-taking
+      if (state.isHandsFree) {
+        if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+        const nextSpeaker = (state.activeSpeaker === 'user') ? 'partner' : 'user';
+        state.handsFreeTimer = setTimeout(() => {
+          if (!state.isHandsFree || state.isRecording || state.isSpeaking) return;
+          console.log("Hands-Free: auto-starting turn for", nextSpeaker);
+          startRecording(nextSpeaker);
+        }, 750);
+      }
     };
     window.onTTSError = function() {
       state.ttsQueue = [];
       state.orbMode = 0;
       state.isSpeaking = false;
+
+      if (state.isHandsFree) {
+        if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+        const nextSpeaker = (state.activeSpeaker === 'user') ? 'partner' : 'user';
+        state.handsFreeTimer = setTimeout(() => {
+          if (!state.isHandsFree || state.isRecording || state.isSpeaking) return;
+          startRecording(nextSpeaker);
+        }, 900);
+      }
     };
 
     function splitSpeechChunks(text, maxLen) {
@@ -2208,10 +2328,13 @@
 
       // 3. Equator & Settings Modal -> User's chosen language
       if (autoStopLabel) {
-        const prefix = t(srcL, 'autoPrefix');
-        autoStopLabel.textContent = state.autoStopMode === "Qo'lda"
-          ? `${prefix}: ${t(srcL, 'autoOff')}`
-          : `${prefix}: ${state.autoStopMode}`;
+        autoStopLabel.textContent = state.autoStopMode === "Qo'lda" ? "OFF" : state.autoStopMode;
+        if (toggleAutoStopBtn) toggleAutoStopBtn.title = `${t(srcL, 'autoPrefix')}: ${state.autoStopMode}`;
+      }
+      if (handsFreeLabel) {
+        handsFreeLabel.textContent = state.isHandsFree
+          ? (t(srcL, 'handsFreeOn') || 'Hands-Free: ON')
+          : (t(srcL, 'handsFree') || 'Hands-Free');
       }
       if (settingsModalTitle) settingsModalTitle.textContent = t(srcL, 'settings');
       if (pingText && !pingText.textContent.includes('ms)')) pingText.textContent = t(srcL, 'cloudActive');
@@ -2482,6 +2605,62 @@
     // MICROPHONE RECORDING & SMART AUTO-STOP VAD
     // ========================================================
 
+    // Hands-Free State & Controls
+    function toggleHandsFree() {
+      haptic(16);
+      if (state.isHandsFree) {
+        stopHandsFree();
+      } else {
+        startHandsFree();
+      }
+    }
+
+    function startHandsFree() {
+      if (navigator.onLine === false) {
+        haptic(40);
+        showToast(t(state.sourceLang, 'toastNoInternet'), "warning", 3000);
+        return;
+      }
+      state.isHandsFree = true;
+      if (toggleHandsFreeBtn) toggleHandsFreeBtn.classList.add('active');
+      if (handsFreeLabel) handsFreeLabel.textContent = t(state.sourceLang, 'handsFreeOn') || "Hands-Free: ON";
+      showToast(t(state.sourceLang, 'toastHandsFreeOn'), "info", 2600);
+      playChime('start');
+
+      // Start listening with user speaker
+      state.handsFreeSpeaker = 'user';
+      if (!state.isRecording && !state.isSpeaking) {
+        startRecording('user');
+      }
+    }
+
+    function stopHandsFree() {
+      state.isHandsFree = false;
+      if (state.handsFreeTimer) {
+        clearTimeout(state.handsFreeTimer);
+        state.handsFreeTimer = null;
+      }
+      if (toggleHandsFreeBtn) toggleHandsFreeBtn.classList.remove('active');
+      if (handsFreeLabel) handsFreeLabel.textContent = t(state.sourceLang, 'handsFree') || "Hands-Free";
+      showToast(t(state.sourceLang, 'toastHandsFreeOff'), "info", 1800);
+      playChime('stop');
+
+      if (state.isRecording) {
+        stopRecording(false);
+      }
+      resetStatusDisplay();
+      updateLanguageUI();
+    }
+
+    if (toggleHandsFreeBtn) {
+      toggleHandsFreeBtn.addEventListener('click', toggleHandsFree);
+    }
+    if (orbCanvas) {
+      orbCanvas.addEventListener('click', () => {
+        toggleHandsFree();
+      });
+    }
+
     userMicBtn.addEventListener('click', () => toggleRecording('user'));
     partnerMicBtn.addEventListener('click', () => toggleRecording('partner'));
 
@@ -2523,11 +2702,23 @@
       const activeBtn = speaker === 'user' ? userMicBtn : partnerMicBtn;
       if (speaker === 'user') {
         userMicBtn.classList.add('recording');
-        userMicLabel.textContent = t(state.sourceLang, 'listening');
+        partnerMicBtn.classList.remove('recording');
+        userMicLabel.textContent = state.isHandsFree
+          ? (t(state.sourceLang, 'handsFreeListening') || "Eshitilmoqda...")
+          : t(state.sourceLang, 'listening');
+        if (state.isHandsFree) {
+          partnerMicLabel.textContent = t(state.targetLang, 'handsFreeWaiting') || "Kutilmoqda...";
+        }
         userDisplayText.textContent = "...";
       } else {
         partnerMicBtn.classList.add('recording');
-        partnerMicLabel.textContent = t(state.targetLang, 'listening');
+        userMicBtn.classList.remove('recording');
+        partnerMicLabel.textContent = state.isHandsFree
+          ? (t(state.targetLang, 'handsFreeListening') || "Eshitilmoqda...")
+          : t(state.targetLang, 'listening');
+        if (state.isHandsFree) {
+          userMicLabel.textContent = t(state.sourceLang, 'handsFreeWaiting') || "Kutilmoqda...";
+        }
         partnerDisplayText.textContent = "...";
       }
 
@@ -2845,7 +3036,27 @@
         const srcFullName = LANG_FULL_NAMES[srcL] || LANG_DATA[srcL]?.name || srcL;
         const tgtFullName = LANG_FULL_NAMES[tgtL] || LANG_DATA[tgtL]?.name || tgtL;
 
-        const prompt = `You are an expert bilingual live speech interpreter.
+        let prompt;
+        if (state.isHandsFree) {
+          const userLangName = LANG_FULL_NAMES[state.sourceLang] || state.sourceLang;
+          const partnerLangName = LANG_FULL_NAMES[state.targetLang] || state.targetLang;
+          prompt = `You are a real-time bilingual interpreter in a hands-free face-to-face conversation.
+Spoken audio contains human speech between:
+- User speaking ${userLangName} (${state.sourceLang})
+- Partner speaking ${partnerLangName} (${state.targetLang})
+${getContextHint()}
+
+Instructions:
+1. Detect who spoke in the audio:
+   - If the speech is in ${userLangName} (${state.sourceLang}), set "speaker": "user".
+   - If the speech is in ${partnerLangName} (${state.targetLang}), set "speaker": "partner".
+   (If ambiguous, default to "${speaker}").
+2. Transcribe the audio accurately into "source_text". For Uzbek: use modern standard Latin (o', g').
+3. Translate it accurately and naturally into the OTHER person's language into "translated_text". Preserve politeness and natural tone.
+4. If pure silence, static, or no human speech, return empty strings and "no_speech": true.
+Return ONLY valid JSON: {"speaker":"user"|"partner","source_text":"...","translated_text":"...","no_speech":false}`;
+        } else {
+          prompt = `You are an expert bilingual live speech interpreter.
 Speaker Language: ${srcFullName}.
 Target Translation Language: ${tgtFullName}.${getContextHint()}
 
@@ -2854,6 +3065,7 @@ Instructions:
 2. Translate "source_text" accurately and naturally into "translated_text" in ${tgtFullName}. Preserve exact meaning, tone, and appropriate politeness (siz->Вы/siz, sen->ты/sen). Do not add notes or explanations.
 3. If the audio is pure background silence, static, or breath with no human speech, return empty strings and "no_speech": true.
 Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech":false}`;
+        }
 
         const contents = [{
           parts: [
@@ -2874,22 +3086,46 @@ Return ONLY valid JSON: {"source_text":"...","translated_text":"...","no_speech"
         const sourceText = sanitizeOutputText(json.source_text || '');
         const translatedText = sanitizeOutputText(json.translated_text || '');
 
+        let effectiveSpeaker = speaker;
+        if (state.isHandsFree && (json.speaker === 'user' || json.speaker === 'partner')) {
+          effectiveSpeaker = json.speaker;
+        }
+        const effectiveSrcL = effectiveSpeaker === 'user' ? state.sourceLang : state.targetLang;
+        const effectiveTgtL = effectiveSpeaker === 'user' ? state.targetLang : state.sourceLang;
+
         if (json.no_speech === true || (!sourceText && !translatedText)) {
           resetStatusDisplay();
           state.orbMode = 0;
-          showToast(t(state.sourceLang, 'toastNoSpeech'), "warning", 2200);
+          if (state.isHandsFree) {
+            if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+            state.handsFreeTimer = setTimeout(() => {
+              if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+                startRecording(effectiveSpeaker);
+              }
+            }, 600);
+          } else {
+            showToast(t(state.sourceLang, 'toastNoSpeech'), "warning", 2200);
+          }
           return;
         }
 
-        setCachedTranslation(srcL, tgtL, sourceText, translatedText);
+        setCachedTranslation(effectiveSrcL, effectiveTgtL, sourceText, translatedText);
         const elapsedSec = ((Date.now() - t0) / 1000).toFixed(1);
-        applyTranslationResult(sourceText, translatedText, speaker, srcL, tgtL, elapsedSec);
+        applyTranslationResult(sourceText, translatedText, effectiveSpeaker, effectiveSrcL, effectiveTgtL, elapsedSec);
       } catch (err) {
         if (reqId !== state.activeRequestId) return;
         console.error("Translation error:", err);
         handleTranslationError(err);
         resetStatusDisplay();
         state.orbMode = 0;
+        if (state.isHandsFree) {
+          if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+          state.handsFreeTimer = setTimeout(() => {
+            if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+              startRecording(speaker);
+            }
+          }, 1500);
+        }
       }
     }
 
@@ -3228,6 +3464,18 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
       ctx.strokeStyle = state.orbMode === 1 ? 'rgba(204, 255, 0, 0.9)' : 'rgba(255, 255, 255, 0.45)';
       ctx.stroke();
       ctx.restore();
+
+      // Outer Hands-Free energetic aura ring
+      if (state.isHandsFree) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 1.18, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(204, 255, 0, ' + (0.35 + Math.sin(orbTime * 2.5) * 0.25).toFixed(2) + ')';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([4, 6]);
+        ctx.stroke();
+        ctx.restore();
+      }
 
       requestAnimationFrame(renderOrb);
     }
