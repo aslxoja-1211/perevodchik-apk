@@ -428,55 +428,158 @@
       word-break: break-word;
     }
 
-    /* INLINE EDIT BLOCK */
+    /* INLINE EDIT BLOCK & ACTIONS */
     .edit-box-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .edit-textarea {
       width: 100%;
-      min-height: 72px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      min-height: 84px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
       background: #18181B;
       font-size: 16px;
+      line-height: 1.45;
       font-family: inherit;
       color: #FFFFFF;
       outline: none;
       resize: none;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .edit-textarea:focus {
       border-color: #CCFF00;
+      box-shadow: 0 0 0 3px rgba(204, 255, 0, 0.25), 0 6px 24px rgba(0, 0, 0, 0.6);
     }
 
     .edit-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .cancel-edit-btn {
+      padding: 8px 18px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      border-radius: 9999px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      color: #D4D4D8 !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .cancel-edit-btn:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 255, 0.2) !important;
     }
 
     .save-edit-btn {
-      padding: 7px 16px;
+      padding: 8px 22px;
       border-radius: 9999px;
       background: #CCFF00;
       color: #0D0D0D;
       border: none;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 16px rgba(204, 255, 0, 0.4);
       transition: all 0.2s ease;
     }
 
     .save-edit-btn:active {
       transform: scale(0.95);
       background: #b8e600;
+    }
+
+    /* FULL-FOCUS KEYBOARD-AWARE EDITING MODES (ZERO OVERLAP WITH MIC / DOCK) */
+    body.editing-user #partnerHalf,
+    body.editing-user .center-dock-container,
+    body.editing-user #userHalf .mic-wrap {
+      display: none !important;
+    }
+
+    body.editing-user #userHalf {
+      flex: 1 1 100% !important;
+      height: 100% !important;
+      padding: 12px 18px !important;
+      justify-content: flex-start !important;
+      gap: 12px !important;
+    }
+
+    body.editing-user #userHalf .bar-row {
+      flex-shrink: 0 !important;
+    }
+
+    body.editing-user #userHalf .text-display-box {
+      flex: 1 !important;
+      justify-content: flex-start !important;
+      align-items: stretch !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+
+    body.editing-user #userHalf .edit-box-container {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+
+    body.editing-user #userHalf .edit-textarea {
+      min-height: 90px !important;
+      max-height: 160px !important;
+    }
+
+    /* PARTNER SIDE EDITING (ROTATED UPRIGHT FOR COMFORTABLE TYPING) */
+    body.editing-partner #userHalf,
+    body.editing-partner .center-dock-container,
+    body.editing-partner #partnerHalf .mic-wrap {
+      display: none !important;
+    }
+
+    body.editing-partner #partnerHalf {
+      flex: 1 1 100% !important;
+      height: 100% !important;
+      transform: none !important; /* Rotate upright so user types comfortably! */
+      padding: 12px 18px !important;
+      justify-content: flex-start !important;
+      gap: 12px !important;
+    }
+
+    body.editing-partner #partnerHalf .bar-row {
+      flex-shrink: 0 !important;
+    }
+
+    body.editing-partner #partnerHalf .text-display-box {
+      flex: 1 !important;
+      justify-content: flex-start !important;
+      align-items: stretch !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+
+    body.editing-partner #partnerHalf .edit-box-container {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+
+    body.editing-partner #partnerHalf .edit-textarea {
+      min-height: 90px !important;
+      max-height: 160px !important;
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
     /* BIG MIC BUTTONS */
@@ -1056,7 +1159,7 @@
         <div id="partnerEditBlock" class="edit-box-container hidden">
           <textarea id="partnerEditTextarea" class="edit-textarea" placeholder="Matnni to'g'irlang..."></textarea>
           <div class="edit-actions">
-            <button id="partnerCancelEditBtn" class="pill-btn" style="padding: 5px 12px; font-size: 11px;" type="button">Bekor qilish</button>
+            <button id="partnerCancelEditBtn" class="pill-btn cancel-edit-btn" type="button">Bekor qilish</button>
             <button id="partnerSaveEditBtn" class="save-edit-btn" type="button">Qayta tarjima</button>
           </div>
         </div>
@@ -1162,7 +1265,7 @@
         <div id="userEditBlock" class="edit-box-container hidden">
           <textarea id="userEditTextarea" class="edit-textarea" placeholder="Matnni to'g'irlang..."></textarea>
           <div class="edit-actions">
-            <button id="userCancelEditBtn" class="pill-btn" style="padding: 5px 12px; font-size: 11px;" type="button">Bekor qilish</button>
+            <button id="userCancelEditBtn" class="pill-btn cancel-edit-btn" type="button">Bekor qilish</button>
             <button id="userSaveEditBtn" class="save-edit-btn" type="button">Qayta tarjima</button>
           </div>
         </div>
@@ -2595,20 +2698,47 @@
     // ========================================================
 
     function openUserEditor() {
+      // Pause any ongoing recording/audio to prevent accidental overwriting
+      if (state.isRecording) stopRecording(false);
+      stopAllAudio();
+      if (state.handsFreeTimer) {
+        clearTimeout(state.handsFreeTimer);
+        state.handsFreeTimer = null;
+      }
+      state._wasHandsFreeBeforeEdit = state.isHandsFree;
+
+      document.body.classList.add('editing-user');
       const cur = userDisplayText.textContent.trim();
       userEditTextarea.value = isPlaceholderOrStatus(cur) ? '' : cur;
       userViewBlock.classList.add('hidden');
       userEditBlock.classList.remove('hidden');
-      userEditTextarea.focus();
+
+      setTimeout(() => {
+        userEditTextarea.focus();
+        userEditTextarea.setSelectionRange(userEditTextarea.value.length, userEditTextarea.value.length);
+      }, 60);
     }
+
     function closeUserEditor() {
+      document.body.classList.remove('editing-user');
+      try { userEditTextarea.blur(); } catch (_) {}
       userEditBlock.classList.add('hidden');
       userViewBlock.classList.remove('hidden');
     }
 
     userEditBtn.addEventListener('click', openUserEditor);
     userDisplayText.addEventListener('click', openUserEditor);
-    userCancelEditBtn.addEventListener('click', closeUserEditor);
+
+    userCancelEditBtn.addEventListener('click', () => {
+      closeUserEditor();
+      if (state._wasHandsFreeBeforeEdit && state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+        state.handsFreeTimer = setTimeout(() => {
+          if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+            startRecording('user');
+          }
+        }, 500);
+      }
+    });
 
     userSaveEditBtn.addEventListener('click', async () => {
       const newText = userEditTextarea.value.trim();
@@ -2623,20 +2753,46 @@
     });
 
     function openPartnerEditor() {
+      if (state.isRecording) stopRecording(false);
+      stopAllAudio();
+      if (state.handsFreeTimer) {
+        clearTimeout(state.handsFreeTimer);
+        state.handsFreeTimer = null;
+      }
+      state._wasHandsFreeBeforeEdit = state.isHandsFree;
+
+      document.body.classList.add('editing-partner');
       const cur = partnerDisplayText.textContent.trim();
       partnerEditTextarea.value = isPlaceholderOrStatus(cur) ? '' : cur;
       partnerViewBlock.classList.add('hidden');
       partnerEditBlock.classList.remove('hidden');
-      partnerEditTextarea.focus();
+
+      setTimeout(() => {
+        partnerEditTextarea.focus();
+        partnerEditTextarea.setSelectionRange(partnerEditTextarea.value.length, partnerEditTextarea.value.length);
+      }, 60);
     }
+
     function closePartnerEditor() {
+      document.body.classList.remove('editing-partner');
+      try { partnerEditTextarea.blur(); } catch (_) {}
       partnerEditBlock.classList.add('hidden');
       partnerViewBlock.classList.remove('hidden');
     }
 
     partnerEditBtn.addEventListener('click', openPartnerEditor);
     partnerDisplayText.addEventListener('click', openPartnerEditor);
-    partnerCancelEditBtn.addEventListener('click', closePartnerEditor);
+
+    partnerCancelEditBtn.addEventListener('click', () => {
+      closePartnerEditor();
+      if (state._wasHandsFreeBeforeEdit && state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+        state.handsFreeTimer = setTimeout(() => {
+          if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+            startRecording('partner');
+          }
+        }, 500);
+      }
+    });
 
     partnerSaveEditBtn.addEventListener('click', async () => {
       const newText = partnerEditTextarea.value.trim();
