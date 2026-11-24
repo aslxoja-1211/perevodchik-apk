@@ -30,16 +30,19 @@ Ekran ikkiga bo'lingan bo'lib, ikkinchi tomon suhbatdoshingiz uchun avtomatik 18
 2. 🎙️ Tabiiy Avto-To'xtash (Smart VAD):
 Gapirib bo'lishingiz bilan ilova nutq tugaganini avtomatik sezadi va darhol tarjima qilishga kirishadi. Ortiqcha tugmalarni bosib o'tirish shart emas.
 
-3. 🔊 Studiya Sifatidagi Neyron Ovoz (HD Audio):
+3. 🤖 Hands-Free Stol Usti Rejimi (Tugmalarsiz jonli muloqot):
+Telefoningizni stolga qo'ying va bemalol suhbatlashing! Ilova har bir gapdan so'ng navbatni avtomatik suhbatdoshingizga o'tkazib, uzluksiz tarjima qiladi.
+
+4. 🔊 Studiya Sifatidagi Neyron Ovoz (HD Audio):
 Robotdek qotib qolgan ovozlar yo'q! HopTell barcha tillarda (O'zbekcha, Ruscha, Turkcha, Inglizcha, Xitoycha) tabiiy, mayin va insoniy ohangda gapiradi.
 
-4. ⚡ Bir Lahzalik (0 soniyalik) Kesh:
+5. ⚡ Bir Lahzalik (0 soniyalik) Kesh:
 Tez-tez ishlatiladigan kundalik iboralar xotiraga saqlanadi va qayta aytilganda internetsiz, bir zumda yangraydi.
 
-5. ✏️ Matnni Oson To'g'irlash:
+6. ✏️ Matnni Oson To'g'irlash:
 Agar ism yoki maxsus atama noto'g'ri eshitilsa, matn ustiga bosib uni osongina tahrirlashingiz va bir zumda qayta tarjima qilishingiz mumkin.
 
-6. 🛡️ To'liq Maxfiylik:
+7. 🛡️ To'liq Maxfiylik:
 Sizning ovozli yozuvlaringiz hech qachon serverlarda saqlanmaydi va uchinchi shaxslarga berilmaydi. Tarjima to'g'ridan-to'g'ri xavfsiz shifrlangan TLS kanal orqali amalga oshiriladi.
 
 🌍 QO'LLAB-QUVVATLANADIGAN TILLAR:
@@ -80,13 +83,16 @@ HopTell — интеллектуальный голосовой переводч
 2. 🎙️ Умное авто-определение пауз (Smart VAD):
 Приложение автоматически понимает, когда вы закончили фразу, и мгновенно переводит речь.
 
-3. 🔊 Студийный нейронный голос:
+3. 🤖 Режим Hands-Free (Разговор без рук):
+Положите телефон на стол и просто общайтесь! Приложение само определяет реплики, переводит их и передает микрофон собеседнику в непрерывном диалоге.
+
+4. 🔊 Студийный нейронный голос:
 Никаких металлических звуков. HopTell озвучивает переводы мягким и выразительным человеческим голосом на узбекском, русском, турецком, английском и китайском языках.
 
-4. ⚡ Мгновенный кэш частых фраз:
+5. ⚡ Мгновенный кэш частых фраз:
 Популярные фразы воспроизводятся с нулевой задержкой.
 
-5. 🛡️ Полная конфиденциальность:
+6. 🛡️ Полная конфиденциальность:
 Ваши разговоры не сохраняются на серверах. Все соединения защищены сквозным TLS-шифрованием.
 ```
 
@@ -112,6 +118,7 @@ Place your device on the table: the top half is flipped 180° for your conversat
 
 🌟 HIGHLIGHTS:
 - 🔄 Face-to-Face Dual View: Simultaneous reversed layout for effortless in-person dialogue.
+- 🤖 Hands-Free Mode: Continuous tabletop conversation without touching any buttons.
 - 🎙️ Smart Pause Detection (VAD): Automatically detects when you stop speaking.
 - 🔊 Studio Neural Voices: Fluent, natural pronunciation across Uzbek, Russian, Turkish, English, and Chinese.
 - ⚡ Zero-Lag Cache: Repeated phrases translate and play instantly.
