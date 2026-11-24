@@ -1685,7 +1685,8 @@
       orbMode: 0, // 0: idle, 1: recording, 2: processing, 3: speaking
       isHandsFree: false,
       handsFreeSpeaker: 'user',
-      handsFreeTimer: null
+      handsFreeTimer: null,
+      wakeLockSentinel: null
     };
 
     // Load persistent frequent phrase translation cache (instant 0ms translation for repeated phrases)
@@ -1726,12 +1727,79 @@
     else if (state.autoStopMode === "Qo'lda") state.silenceThresholdMs = 999999;
     else { state.autoStopMode = '1.4s'; state.silenceThresholdMs = 1400; }
 
+    // Screen Wake Lock (Ensures table stays awake during Hands-Free conversation)
+    async function requestScreenWakeLock() {
+      try {
+        if (window.AndroidNativeTTS && typeof window.AndroidNativeTTS.setKeepScreenOn === 'function') {
+          window.AndroidNativeTTS.setKeepScreenOn(true);
+        }
+        if ('wakeLock' in navigator && typeof navigator.wakeLock.request === 'function') {
+          if (!state.wakeLockSentinel) {
+            state.wakeLockSentinel = await navigator.wakeLock.request('screen');
+            state.wakeLockSentinel.addEventListener('release', () => {
+              state.wakeLockSentinel = null;
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('WakeLock request error:', err);
+      }
+    }
+
+    function releaseScreenWakeLock() {
+      try {
+        if (window.AndroidNativeTTS && typeof window.AndroidNativeTTS.setKeepScreenOn === 'function') {
+          window.AndroidNativeTTS.setKeepScreenOn(false);
+        }
+        if (state.wakeLockSentinel) {
+          state.wakeLockSentinel.release();
+          state.wakeLockSentinel = null;
+        }
+      } catch (err) {
+        console.warn('WakeLock release error:', err);
+      }
+    }
+
     // Real-time network status notifications
     window.addEventListener('offline', () => {
       showToast(t(state.sourceLang, 'toastOffline'), "warning", 3500);
+      if (state.isHandsFree) {
+        if (state.isRecording) stopRecording(false);
+        if (state.handsFreeTimer) {
+          clearTimeout(state.handsFreeTimer);
+          state.handsFreeTimer = null;
+        }
+      }
     });
     window.addEventListener('online', () => {
       showToast(t(state.sourceLang, 'toastOnline'), "success", 2000);
+      if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+        startRecording(state.handsFreeSpeaker || 'user');
+      }
+    });
+
+    // App Visibility & Lifecycle management (Incoming call, app switch, screen lock)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        if (state.isRecording) stopRecording(false);
+        stopAllAudio();
+        if (state.handsFreeTimer) {
+          clearTimeout(state.handsFreeTimer);
+          state.handsFreeTimer = null;
+        }
+        releaseScreenWakeLock();
+      } else if (document.visibilityState === 'visible') {
+        if (state.isHandsFree) {
+          requestScreenWakeLock();
+          if (!state.isRecording && !state.isSpeaking) {
+            setTimeout(() => {
+              if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+                startRecording(state.handsFreeSpeaker || 'user');
+              }
+            }, 600);
+          }
+        }
+      }
     });
 
     // ========================================================
@@ -2376,6 +2444,8 @@
     // Language Swap
     swapLangsBtn.addEventListener('click', () => {
       haptic(16);
+      if (state.isRecording) stopRecording(false);
+      stopAllAudio();
       const temp = state.sourceLang;
       state.sourceLang = state.targetLang;
       state.targetLang = temp;
@@ -2622,6 +2692,7 @@
         return;
       }
       state.isHandsFree = true;
+      requestScreenWakeLock();
       if (toggleHandsFreeBtn) toggleHandsFreeBtn.classList.add('active');
       if (handsFreeLabel) handsFreeLabel.textContent = t(state.sourceLang, 'handsFreeOn') || "Hands-Free: ON";
       showToast(t(state.sourceLang, 'toastHandsFreeOn'), "info", 2600);
@@ -2636,6 +2707,7 @@
 
     function stopHandsFree() {
       state.isHandsFree = false;
+      releaseScreenWakeLock();
       if (state.handsFreeTimer) {
         clearTimeout(state.handsFreeTimer);
         state.handsFreeTimer = null;
@@ -2690,6 +2762,7 @@
 
       state.isRecording = true;
       state.activeSpeaker = speaker;
+      if (state.isHandsFree) state.handsFreeSpeaker = speaker;
       state.orbMode = 1;
       state.recordedMediaChunks = [];
       state.hasSpoken = false;
@@ -3002,6 +3075,7 @@
       const msg = String(err && err.message ? err.message : err || '');
       if (msg.includes('401') || msg.includes('API key not valid') || msg.includes('UNAUTHENTICATED')) {
         showToast(t(srcL, 'toastApi401'), "error", 4500);
+        if (state.isHandsFree) stopHandsFree();
         geminiApiKeyInput.value = state.geminiApiKey || '';
         serverModal.classList.remove('hidden');
       } else if (msg.includes('Unable to process input') || msg.includes('corrupted') || msg.includes('malformed') || msg.includes('HTTP 400')) {
@@ -3248,6 +3322,14 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
+        } else if (state.isHandsFree) {
+          if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+          const nextSpeaker = (speaker === 'user') ? 'partner' : 'user';
+          state.handsFreeTimer = setTimeout(() => {
+            if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+              startRecording(nextSpeaker);
+            }
+          }, 800);
         }
       } else {
         state.lastPartnerText = srcText;
@@ -3264,6 +3346,14 @@ No markdown, no notes. JSON only: {"translated_text":"..."}`;
 
         if (tgtText && tgtText.trim()) {
           speakText(tgtText, tgtL);
+        } else if (state.isHandsFree) {
+          if (state.handsFreeTimer) clearTimeout(state.handsFreeTimer);
+          const nextSpeaker = (speaker === 'user') ? 'partner' : 'user';
+          state.handsFreeTimer = setTimeout(() => {
+            if (state.isHandsFree && !state.isRecording && !state.isSpeaking) {
+              startRecording(nextSpeaker);
+            }
+          }, 800);
         }
       }
     }

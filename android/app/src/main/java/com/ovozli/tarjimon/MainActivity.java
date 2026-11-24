@@ -368,6 +368,21 @@ public class MainActivity extends BridgeActivity {
         }
 
         @JavascriptInterface
+        public void setKeepScreenOn(final boolean keepOn) {
+            runOnUiThread(() -> {
+                try {
+                    if (keepOn) {
+                        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        Log.d(TAG, "Screen Keep-On enabled");
+                    } else {
+                        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        Log.d(TAG, "Screen Keep-On cleared");
+                    }
+                } catch (Exception ignored) {}
+            });
+        }
+
+        @JavascriptInterface
         public void stop() {
             if (mediaPlayer != null) {
                 try { mediaPlayer.stop(); mediaPlayer.release(); } catch (Exception ignored) {}
